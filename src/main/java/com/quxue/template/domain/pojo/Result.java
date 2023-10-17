@@ -1,16 +1,26 @@
-package com.quxue.wedding_host.pojo;
+package com.quxue.template.domain.pojo;
+
+import cn.hutool.http.HttpStatus;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import static cn.hutool.http.HttpStatus.HTTP_INTERNAL_ERROR;
+import static cn.hutool.http.HttpStatus.HTTP_OK;
 
 /**
  * 返回给前端的通用对象
  */
+@ApiModel
 public class Result {
-    private Integer code;
+    @ApiModelProperty(value = "业务处理响应码", example = "比如成功返回200")
+    private Integer statusCode;
     //逻辑状态码（开发者自定义）不是http响应状态码，
     // 一般200认为成功，500任务逻辑有问题
-
-    private String msg;//message
+    @ApiModelProperty(value = "业务处理返回提示信息", example = "比如失败后返回错误的原因")
+    private String message;
     //返回给前端的消息，一般都是逻辑错误以后给前端返回提示信息
 
+    @ApiModelProperty(value = "业务处理成功后返回的数据",example = "比如登录成功后返回身份认证的令牌")
     private Object data;
     //返回给前端的数据对象，比如单行查询，多行查询
 
@@ -20,69 +30,70 @@ public class Result {
 
 
     public static Result success() {
+
         Result result = new Result();
-        result.code = 200;
-        result.msg = "success";
+        result.statusCode = HTTP_OK;
+        result.message = "success";
         return result;
     }
 
     public static Result success(String msg, Object data) {
         Result result = new Result();
-        result.code = 200;
-        result.data=data;
-        result.msg = msg;
+        result.statusCode = HTTP_OK;
+        result.data = data;
+        result.message = msg;
         return result;
     }
 
     public static Result success(String msg) {
         Result result = new Result();
-        result.code = 200;
-        result.msg = msg;
+        result.statusCode = HTTP_OK;
+        result.message = msg;
         return result;
     }
 
     public static Result success(Object data) {
         Result result = new Result();
-        result.code = 200;
+        result.statusCode = HTTP_OK;
         result.data = data;
         return result;
     }
 
     public static Result error() {
         Result result = new Result();
-        result.code = 500;
-        result.msg = "error";
+        result.statusCode = HTTP_INTERNAL_ERROR;
+        result.message = "error";
         return result;
     }
 
     public static Result error(String msg) {
         Result result = new Result();
-        result.code = 500;
-        result.msg = msg;
+        result.statusCode = HTTP_INTERNAL_ERROR;
+        result.message = msg;
         return result;
     }
 
     public static Result error(Integer customCode, String msg) {
         Result result = new Result();
-        result.code = customCode;
-        result.msg = msg;
+        result.statusCode = customCode;
+        result.message = msg;
         return result;
     }
 
-    public Integer getCode() {
-        return code;
+    public Integer getStatusCode() {
+        return statusCode;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
+    public void setStatusCode(Integer statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Object getData() {

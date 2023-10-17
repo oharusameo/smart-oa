@@ -1,4 +1,4 @@
-package com.quxue.wedding_host.util;
+package com.quxue.template.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import io.minio.*;

@@ -1,14 +1,9 @@
-package com.quxue.wedding_host.config;
+package com.quxue.template.config;
 
-import io.minio.BucketExistsArgs;
 import io.minio.MinioClient;
-import io.minio.RemoveBucketArgs;
-import io.minio.messages.Bucket;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 public class MinIOConfig {

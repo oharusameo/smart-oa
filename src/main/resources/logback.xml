@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--1，定义日志保存的路径-->
+    <property name="LOG_HOME" value="d://logs//"/>
+
+    <!--2，定义一个控制台输出器，名为console-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--按pattern指定的格式输出日志，编码为UTF-8-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--定义日志输出的格式-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{30} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--3，定义debug级别的日志消息处理逻辑-->
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--按pattern指定的格式输出日志，编码为UTF-8-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{30} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 定义保存的文件名 -->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${LOG_HOME}/debug_%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            &lt;!&ndash;日志最多保存30天&ndash;&gt;-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+    </appender>
+
+    <!--3，定义info级别的日志消息处理逻辑-->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--按pattern指定的格式输出日志，编码为UTF-8-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{30} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 定义保存的文件名 -->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${LOG_HOME}/info_%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            &lt;!&ndash;日志最多保存30天&ndash;&gt;-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+    </appender>
+
+    <!--3，定义error级别的日志消息处理逻辑-->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--按pattern指定的格式输出日志，编码为UTF-8-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{30} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 定义保存的文件名 -->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${LOG_HOME}/error_%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            &lt;!&ndash;日志最多保存30天&ndash;&gt;-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+    </appender>
+
+    <!-- 5.定义日志全局最低输出级别是INFO -->
+    <root level="INFO">
+        <!--定义日志输出的目的地-->
+        <appender-ref ref="console"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="error"/>
+    </root>
+</configuration>

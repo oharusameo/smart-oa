@@ -1,12 +1,12 @@
 spring:
+  application:
+    name: template
   datasource:
     #    url: jdbc:mysql://127.0.0.1:3306/wedding_host_db #主机启动配置
     url: jdbc:mysql://192.168.40.129:3306/wedding_host_db #docker 部署配置
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: ggzst321
-    application:
-      name: template
     type: com.zaxxer.hikari.HikariDataSource
     dbcp2:
       test-on-borrow: true
@@ -19,7 +19,7 @@ spring:
       max-total:
 
   redis:
-    host: 192.168.40.129 #redis服务腹肌
+    host: 192.168.40.129 #redis服务
     port: 6379 #端口
     password: ggzst321 #密码
     connect-timeout: 60000 #连接超时单位ms
@@ -29,13 +29,12 @@ spring:
         max-idle: 128 #最大空闲连接数
         min-idle: 128 #最小空闲连接数
         max-wait: 1000ms #最大连接等待时间
+
 swagger:
   enabled: true
   application-name: ${spring.application.name}
   application-version: 1.0
   application-description: template-API文档
-
-
 
 
 mybatis-plus:
