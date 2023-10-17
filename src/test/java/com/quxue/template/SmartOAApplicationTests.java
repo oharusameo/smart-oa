@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import java.time.Duration;
 
 @SpringBootTest
-class TemplateApplicationTests {
+class SmartOAApplicationTests {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
