@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -13,6 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="t_station")
 @Data
+@ApiModel
 public class Station implements Serializable {
     /**
      * 
@@ -23,11 +27,13 @@ public class Station implements Serializable {
     /**
      * 岗位名称
      */
+    @ApiModelProperty("岗位名称")
     private String title;
 
     /**
      * 部门名称
      */
+    @ApiModelProperty("部门名称")
     private Integer deptId;
 
     @TableField(exist = false)

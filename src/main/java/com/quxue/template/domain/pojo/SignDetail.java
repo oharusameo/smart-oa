@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -14,6 +17,7 @@ import lombok.Data;
  */
 @TableName(value ="t_sign_detail")
 @Data
+@ApiModel
 public class SignDetail implements Serializable {
     /**
      * 
@@ -24,31 +28,37 @@ public class SignDetail implements Serializable {
     /**
      * 用户ID
      */
+    @ApiModelProperty("用户ID")
     private Integer userId;
 
     /**
      * 签到/签退地址
      */
+    @ApiModelProperty("签到/签退地址")
     private String address;
 
     /**
      * 签到/签退日期
      */
+    @ApiModelProperty("签到/签退日期")
     private Date signDate;
 
     /**
      * 签到/签退时间
      */
+    @ApiModelProperty("签到/签退时间")
     private Date signTime;
 
     /**
      * 类型：1：签到；0：签退
      */
+    @ApiModelProperty("类型：1：签到；0：签退")
     private Integer signType;
 
     /**
      * 结果 1:正常 2:迟到 3:早退
      */
+    @ApiModelProperty("结果 1:正常 2:迟到 3:早退")
     private Integer signStatus;
 
     @TableField(exist = false)

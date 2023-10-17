@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -13,6 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="t_face_model")
 @Data
+@ApiModel
 public class FaceModel implements Serializable {
     /**
      * 
@@ -23,11 +27,13 @@ public class FaceModel implements Serializable {
     /**
      * 用户ID
      */
+    @ApiModelProperty("用户ID")
     private Integer userId;
 
     /**
      * 对应的人脸模型ID
      */
+    @ApiModelProperty("对应的人脸模型ID")
     private String faceModelId;
 
     @TableField(exist = false)

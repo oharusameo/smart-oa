@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -13,6 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="t_attendance_alarm")
 @Data
+@ApiModel
 public class AttendanceAlarm implements Serializable {
     /**
      * 
@@ -23,16 +27,19 @@ public class AttendanceAlarm implements Serializable {
     /**
      * 迟到次数警告阈值
      */
+    @ApiModelProperty("迟到次数警告阈值")
     private Integer lateCount;
 
     /**
      * 早退次数警告阈值
      */
+    @ApiModelProperty("早退次数警告阈值")
     private Integer earlyCount;
 
     /**
      * 管理员ID
      */
+    @ApiModelProperty("管理员ID")
     private Integer userId;
 
     @TableField(exist = false)

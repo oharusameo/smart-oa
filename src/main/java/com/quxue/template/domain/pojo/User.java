@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -14,6 +17,7 @@ import lombok.Data;
  */
 @TableName(value ="t_user")
 @Data
+@ApiModel
 public class User implements Serializable {
     /**
      * 
@@ -24,71 +28,85 @@ public class User implements Serializable {
     /**
      * 微信唯一认证字符串
      */
+    @ApiModelProperty("微信唯一认证字符串")
     private String openId;
 
     /**
      * 姓名
      */
+    @ApiModelProperty("姓名")
     private String username;
 
     /**
      * 头像URL
      */
+    @ApiModelProperty("头像URL")
     private String photo;
 
     /**
      * 手机号码
      */
+    @ApiModelProperty("手机号码")
     private String telephone;
 
     /**
      * 邮箱
      */
+    @ApiModelProperty("邮箱")
     private String email;
 
     /**
      * 入职日期
      */
+    @ApiModelProperty("入职日期")
     private Date hiredate;
 
     /**
      * 部门名称
      */
+    @ApiModelProperty("部门名称")
     private String department;
 
     /**
      * 岗位
      */
+    @ApiModelProperty("岗位")
     private String station;
 
     /**
      * 是否为超级管理员，1：管理员，0：非管理员
      */
+    @ApiModelProperty("是否为超级管理员，1：管理员，0：非管理员")
     private Integer root;
 
     /**
      * 员工状态，1：正常 2：冻结，3：离职
      */
+    @ApiModelProperty("员工状态，1：正常 2：冻结，3：离职")
     private Integer status;
 
     /**
      * 创建时间
      */
+    @ApiModelProperty("创建时间")
     private Date createTime;
 
     /**
      * 修改时间，初始状态与创建时间一致
      */
+    @ApiModelProperty("修改时间，初始状态与创建时间一致")
     private Date updateTime;
 
     /**
      * 创建人
      */
+    @ApiModelProperty("创建人")
     private Integer createUser;
 
     /**
      * 修改人，初始状态与创建人一致
      */
+    @ApiModelProperty("修改人，初始状态与创建人一致")
     private Integer updateUser;
 
     @TableField(exist = false)

@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -14,6 +17,7 @@ import lombok.Data;
  */
 @TableName(value ="t_holidays")
 @Data
+@ApiModel
 public class Holidays implements Serializable {
     /**
      * 
@@ -24,6 +28,7 @@ public class Holidays implements Serializable {
     /**
      * 
      */
+    @ApiModelProperty("日期")
     private Date date;
 
     @TableField(exist = false)

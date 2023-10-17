@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -13,6 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="t_clock_in_rule")
 @Data
+@ApiModel
 public class ClockInRule implements Serializable {
     /**
      * 
@@ -23,36 +27,43 @@ public class ClockInRule implements Serializable {
     /**
      * 上班打卡开始时间点
      */
+    @ApiModelProperty("上班打卡开始时间点")
     private String signinStartTime;
 
     /**
      * 上班时间点
      */
+    @ApiModelProperty("上班时间点")
     private String signinTime;
 
     /**
      * 上班打卡结束时间点
      */
+    @ApiModelProperty("上班打卡结束时间点")
     private String signinEndTime;
 
     /**
      * 下班打卡开始时间点
      */
+    @ApiModelProperty("下班打卡开始时间点")
     private String signoutStartTime;
 
     /**
      * 下班时间点
      */
+    @ApiModelProperty("下班时间点")
     private String signoutTime;
 
     /**
      * 下班打卡结束时间点
      */
+    @ApiModelProperty("下班打卡结束时间点")
     private String signoutEndTime;
 
     /**
      * 管理员ID
      */
+    @ApiModelProperty("管理员ID")
     private Integer userId;
 
     @TableField(exist = false)

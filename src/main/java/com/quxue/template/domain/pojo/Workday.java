@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -14,6 +17,7 @@ import lombok.Data;
  */
 @TableName(value ="t_workday")
 @Data
+@ApiModel
 public class Workday implements Serializable {
     /**
      * 
@@ -24,6 +28,7 @@ public class Workday implements Serializable {
     /**
      * 
      */
+    @ApiModelProperty("工作日期")
     private Date date;
 
     @TableField(exist = false)
