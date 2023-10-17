@@ -12,6 +12,6 @@ import javax.validation.constraints.Pattern;
 public class ValidationRequestParam {
     @NotBlank
     @ApiModelProperty
-    @Pattern(regexp = "^0?(13|15|18)[0-9]{9}$",message = "手机格式不符合条件")
+    @Pattern(regexp = "^0?(13|15|18)[0-9]{9}$", message = "手机格式不符合条件")
     private String phone;
 }

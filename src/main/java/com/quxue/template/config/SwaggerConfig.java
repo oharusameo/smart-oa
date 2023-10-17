@@ -25,8 +25,9 @@ public class SwaggerConfig {
     private String applicationName;
     private String applicationVersion;
     private String applicationDescription;
+
     @Bean
-    public Docket docket(){
+    public Docket docket() {
         return new Docket(DocumentationType.OAS_30)
                 .pathMapping("/")
                 .enable(enabled)
@@ -39,12 +40,13 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build();
     }
-    private ApiInfo getApiInfo(){
+
+    private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
                 .title(applicationName)
                 .description(applicationDescription)
                 .version(applicationVersion)
-                .contact(new Contact("harusame","https://www.bilibili.com","ggzst321@outlook.com"))
+                .contact(new Contact("harusame", "https://www.bilibili.com", "ggzst321@outlook.com"))
                 .build();
 
     }

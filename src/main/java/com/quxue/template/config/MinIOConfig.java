@@ -15,8 +15,9 @@ public class MinIOConfig {
 
     @Value("${minio.secret-key}")
     private String secretKey;
+
     @Bean
-    public MinioClient getMinClient(){
+    public MinioClient getMinClient() {
         //创建客户端
         MinioClient minioClient = MinioClient.builder()
                 .endpoint(endpoint)

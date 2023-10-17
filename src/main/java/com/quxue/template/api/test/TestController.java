@@ -1,6 +1,7 @@
 package com.quxue.template.api.test;
 
 import com.quxue.template.domain.dto.ValidationRequestParam;
+import com.quxue.template.domain.dto.XssReqParam;
 import com.quxue.template.domain.pojo.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,13 @@ public class TestController {
     @ApiOperation("手机号码格式校验测试")
     public Result testApi(@Valid @RequestBody ValidationRequestParam requestParam) {
 
-            return Result.success();
+        return Result.success();
+    }
+
+    @PostMapping("/xss.do")
+    @ApiOperation("xss脚本攻击测试")
+    public Result testXss(@Valid @RequestBody XssReqParam requestParam) {
+        System.out.println(requestParam.getMessage());
+        return Result.success();
     }
 }
