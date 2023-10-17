@@ -7,13 +7,13 @@ import com.quxue.template.mapper.AttendanceAlarmMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author ggzst
+* @author harusame
 * @description 针对表【t_attendance_alarm】的数据库操作Service实现
-* @createDate 2023-10-17 19:02:12
+* @createDate 2023-10-17 20:12:16
 */
 @Service
 public class AttendanceAlarmServiceImpl extends ServiceImpl<AttendanceAlarmMapper, AttendanceAlarm>
-    implements AttendanceAlarmService{
+    implements AttendanceAlarmService {
 
 }
 
