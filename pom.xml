@@ -86,6 +86,16 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.22</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -108,7 +118,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.2.2</version>
                 <configuration>
-                    <imageName>wedding_host_system:1.0</imageName>  <!--指定镜像名称 仓库/镜像名:标签-->
+                    <imageName>smart-oa</imageName>  <!--指定镜像名称 仓库/镜像名:标签-->
                     <baseImage>openjdk:latest</baseImage> <!--指定基础镜像-->
                     <dockerHost>http://192.168.40.129:2375</dockerHost>  <!-- 指定服务器仓库地址 -->
                     <entryPoint>["java","-jar","/${project.build.finalName}.jar"]</entryPoint> <!-- 容器启动执行的命令 -->

@@ -1,6 +1,5 @@
 package com.quxue.template.domain.pojo;
 
-import cn.hutool.http.HttpStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -27,7 +26,6 @@ public class Result {
     /**
      * 下面是常用快捷方法
      */
-
 
     public static Result success() {
 
@@ -102,5 +100,7 @@ public class Result {
 
     public void setData(Object data) {
         this.data = data;
+    }
+    private Result() {
     }
 }
