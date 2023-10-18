@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.constant.UserConst;
 import com.quxue.template.domain.dto.AdminInitDTO;
 import com.quxue.template.domain.pojo.User;
+import com.quxue.template.service.EmailService;
 import com.quxue.template.service.UserService;
 import com.quxue.template.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.annotation.Resource;
 import java.time.Duration;
@@ -34,6 +37,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
     @Resource
+    private EmailService emailService;
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
@@ -49,6 +54,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String code = null;
         if (userMapper.insert(user) == 1) {
             code = generateRandomCode(user);
+            if (code != null) {
+                String finalCode = code;
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        String subject = "smart-oa管理员初始化验证码";
+                        String target = user.getEmail();
+                        String message = "激活码为：" + finalCode;
+                        emailService.send(subject, message, target);
+                    }
+                });
+            }
         }
         return code;
     }

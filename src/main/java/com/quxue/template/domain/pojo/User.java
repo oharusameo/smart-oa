@@ -1,9 +1,7 @@
 package com.quxue.template.domain.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -83,6 +81,7 @@ public class User implements Serializable {
      * 员工状态，1：正常 2：冻结，3：离职
      */
     @ApiModelProperty("员工状态，1：正常 2：冻结，3：离职")
+    @TableLogic
     private Integer status;
 
     /**

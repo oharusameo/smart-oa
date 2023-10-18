@@ -21,6 +21,7 @@ public class AdminInitApi {
     @Resource
     private UserService userService;
 
+
     @PostMapping("/createRootUser")
     @ApiOperation("初始化超级管理员")
     public Result createRootUser(@RequestBody @Valid AdminInitDTO admin) {

@@ -1,16 +1,13 @@
 package com.quxue.template.service.impl;
 
-import com.quxue.template.domain.dto.EmailDTO;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.service.EmailService;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -33,8 +30,9 @@ public class EmailServiceImpl implements EmailService {
     private String fromName;
 
 
+    @Async("taskExecutor")
     @Override
-    public Result send(EmailDTO emailDTO) {
+    public Result send(String subject, String message, String target) {
         String send;
         try {
             HtmlEmail htmlEmail = new HtmlEmail();
@@ -43,9 +41,9 @@ public class EmailServiceImpl implements EmailService {
             htmlEmail.setSmtpPort(port);
             htmlEmail.setAuthentication(from, password);
             htmlEmail.setFrom(from, fromName);
-            htmlEmail.setSubject(emailDTO.getSubject());
-            htmlEmail.setTextMsg(emailDTO.getMessage());
-            htmlEmail.addTo(emailDTO.getTarget());
+            htmlEmail.setSubject(subject);
+            htmlEmail.setTextMsg(message);
+            htmlEmail.addTo(target);
             send = htmlEmail.send();
         } catch (EmailException e) {
             throw new BusinessException("邮件发送失败");
@@ -58,4 +56,6 @@ public class EmailServiceImpl implements EmailService {
         simpleMailMessage.setTo(target);
         javaMailSender.send(simpleMailMessage);*/
     }
+
+
 }
