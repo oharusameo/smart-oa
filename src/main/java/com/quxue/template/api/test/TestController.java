@@ -38,6 +38,7 @@ public class TestController {
     @PostMapping("/email")
     @ApiOperation("发送邮件测试")
     public Result testEmail(@Valid @RequestBody EmailDTO emailDTO) {
-        return emailService.send(emailDTO.getSubject(), emailDTO.getMessage(), emailDTO.getTarget());
+//        return emailService.send(emailDTO.getSubject(), emailDTO.getMessage(), emailDTO.getTarget());
+        return null;
     }
 }

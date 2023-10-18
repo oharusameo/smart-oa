@@ -54,18 +54,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String code = null;
         if (userMapper.insert(user) == 1) {
             code = generateRandomCode(user);
-            if (code != null) {
-                String finalCode = code;
-                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                    @Override
-                    public void afterCommit() {
-                        String subject = "smart-oa管理员初始化验证码";
-                        String target = user.getEmail();
-                        String message = "激活码为：" + finalCode;
-                        emailService.send(subject, message, target);
-                    }
-                });
-            }
+            String finalCode = code;
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    String subject = "smart-oa管理员初始化激活码";
+                    String target = user.getEmail();
+                    String message = "激活码为：" + finalCode;
+                    emailService.send(subject, message, target);
+                }
+            });
         }
         return code;
     }

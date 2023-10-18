@@ -1,6 +1,5 @@
 package com.quxue.template.service.impl;
 
-import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.service.EmailService;
 import org.apache.commons.mail.EmailException;
@@ -32,7 +31,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Async("taskExecutor")
     @Override
-    public Result send(String subject, String message, String target) {
+    public void send(String subject, String message, String target) {
         String send;
         try {
             HtmlEmail htmlEmail = new HtmlEmail();
@@ -44,11 +43,10 @@ public class EmailServiceImpl implements EmailService {
             htmlEmail.setSubject(subject);
             htmlEmail.setTextMsg(message);
             htmlEmail.addTo(target);
-            send = htmlEmail.send();
+            htmlEmail.send();
         } catch (EmailException e) {
             throw new BusinessException("邮件发送失败");
         }
-        return Result.success(send);
     /*        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(form);
         simpleMailMessage.setSubject(subject);
