@@ -8,6 +8,7 @@ import com.quxue.template.domain.dto.AdminInitDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
 import com.quxue.template.exception.BusinessException;
+import com.quxue.template.exception.SystemException;
 import com.quxue.template.service.EmailService;
 import com.quxue.template.service.UserService;
 import com.quxue.template.mapper.UserMapper;
@@ -35,7 +36,7 @@ import java.util.Random;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-        implements UserService ,UserConst{
+        implements UserService, UserConst {
 
     @Resource
     private UserMapper userMapper;
@@ -67,8 +68,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     String target = user.getEmail();
                     String message = "激活码为：" + finalCode;
                     emailService.send(subject, message, target);
-        }
-    });
+                }
+            });
         }
         return code;
     }
@@ -76,15 +77,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String register(UserActiveDTO userActiveDTO) {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        String id = ops.get(ACTIVE_USER+userActiveDTO.getRegisterCode());
+        String registerCode = userActiveDTO.getRegisterCode();
+        String keyInRedis = String.format("%s%s", ACTIVE_USER, registerCode);
+        String id = ops.get(keyInRedis);
         if (id == null) {
-            throw new BusinessException("激活码错误，没有找到相应的激活码");
+            throw new BusinessException("激活码错误或已过期");
         }
         String openId = weChatUtils.getOpenId(userActiveDTO.getTempCAPTCHA());
+
+        if (userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId)) != null) {
+            throw new BusinessException("该微信已经存在绑定用户");
+        }
+
         User user = new User();
         user.setId(Integer.valueOf(id));
         user.setOpenId(openId);
         if (userMapper.activateUser(user) == 1) {
+            //用户激活后删除激活码
+            stringRedisTemplate.delete(keyInRedis);
             String token = "注册成功，返回由JWT工具类生成的token";
             return token;
         }
@@ -93,14 +103,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
     private String generateRandomCode(User user) {
-        String code = RandomUtil.randomNumbers(8);
+        String code = RandomUtil.randomNumbers(RANDOM_CODE_LENGTH);
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        String key=ACTIVE_USER+code;
-        Boolean set = ops.setIfAbsent(key, String.valueOf(user.getId()), Duration.ofMinutes(10));
+        String keyInRedis = String.format("%s%s", ACTIVE_USER, code);
+        Boolean set = ops.setIfAbsent(keyInRedis, String.valueOf(user.getId()), CODE_DURATION);
         if (Boolean.TRUE.equals(set)) {
             return code;
         }
-        return null;
+        throw new SystemException("生成验证码出错");
     }
 }
 

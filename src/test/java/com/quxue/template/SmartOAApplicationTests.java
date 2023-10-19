@@ -20,7 +20,6 @@ class SmartOAApplicationTests {
 
     @Test
     public void testStringRedisTemplate() {
-        weChatUtils.getUserInfo(null, null);
     }
 
 

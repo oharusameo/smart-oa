@@ -3,6 +3,7 @@ package com.quxue.template.handler;
 import cn.hutool.json.JSONUtil;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -20,6 +21,7 @@ import static cn.hutool.http.HttpStatus.HTTP_FORBIDDEN;
 
 @RestControllerAdvice
 @Component
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
@@ -37,7 +39,7 @@ public class GlobalExceptionHandler {
                 messages.put(error.getField(), error.getDefaultMessage());
             }
             String json = JSONUtil.toJsonStr(messages);
-            System.out.println("json = " + json);
+            log.info(json);
             return Result.error(HTTP_BAD_REQUEST, json);
 
         }
