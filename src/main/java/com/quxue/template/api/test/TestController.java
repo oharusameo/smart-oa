@@ -4,7 +4,7 @@ import com.quxue.template.domain.dto.EmailDTO;
 import com.quxue.template.domain.dto.ValidationRequestParam;
 import com.quxue.template.domain.dto.XssReqParam;
 import com.quxue.template.domain.pojo.Result;
-import com.quxue.template.service.EmailService;
+import com.quxue.template.utils.WeChatUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +18,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/test")
 public class TestController {
 
-    @Autowired
-    private EmailService emailService;
 
     @PostMapping("/validate.do")
     @ApiOperation("手机号码格式校验测试")
@@ -40,5 +38,15 @@ public class TestController {
     public Result testEmail(@Valid @RequestBody EmailDTO emailDTO) {
 //        return emailService.send(emailDTO.getSubject(), emailDTO.getMessage(), emailDTO.getTarget());
         return null;
+    }
+
+    @Autowired
+    private WeChatUtils weChatUtils;
+
+    @PostMapping("/getAccessToken")
+    @ApiOperation("js")
+    public Result testToken(String jsCode) {
+        String accessToken = weChatUtils.getOpenId(jsCode);
+        return Result.success(accessToken);
     }
 }

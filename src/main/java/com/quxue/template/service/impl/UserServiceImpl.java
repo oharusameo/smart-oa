@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.constant.UserConst;
 import com.quxue.template.domain.dto.AdminInitDTO;
+import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
+import com.quxue.template.exception.BusinessException;
 import com.quxue.template.service.EmailService;
 import com.quxue.template.service.UserService;
 import com.quxue.template.mapper.UserMapper;
+import com.quxue.template.utils.WeChatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,7 +35,7 @@ import java.util.Random;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-        implements UserService {
+        implements UserService ,UserConst{
 
     @Resource
     private UserMapper userMapper;
@@ -40,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private EmailService emailService;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private WeChatUtils weChatUtils;
 
     @Override
     @Transactional
@@ -50,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setCreateTime(date);
         user.setUpdateTime(date);
         user.setHiredate(date);
-        user.setRoot(UserConst.IS_ROOT);
+        user.setRoot(IS_ROOT);
         String code = null;
         if (userMapper.insert(user) == 1) {
             code = generateRandomCode(user);
@@ -62,17 +67,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     String target = user.getEmail();
                     String message = "激活码为：" + finalCode;
                     emailService.send(subject, message, target);
-                }
-            });
+        }
+    });
         }
         return code;
+    }
+
+    @Override
+    public String register(UserActiveDTO userActiveDTO) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String id = ops.get(ACTIVE_USER+userActiveDTO.getRegisterCode());
+        if (id == null) {
+            throw new BusinessException("激活码错误，没有找到相应的激活码");
+        }
+        String openId = weChatUtils.getOpenId(userActiveDTO.getTempCAPTCHA());
+        User user = new User();
+        user.setId(Integer.valueOf(id));
+        user.setOpenId(openId);
+        if (userMapper.activateUser(user) == 1) {
+            String token = "注册成功，返回由JWT工具类生成的token";
+            return token;
+        }
+        throw new BusinessException("用户激活失败");
     }
 
 
     private String generateRandomCode(User user) {
         String code = RandomUtil.randomNumbers(8);
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        Boolean set = ops.setIfAbsent(code, String.valueOf(user.getId()), Duration.ofMinutes(10));
+        String key=ACTIVE_USER+code;
+        Boolean set = ops.setIfAbsent(key, String.valueOf(user.getId()), Duration.ofMinutes(10));
         if (Boolean.TRUE.equals(set)) {
             return code;
         }

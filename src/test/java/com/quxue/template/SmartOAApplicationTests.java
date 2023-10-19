@@ -1,6 +1,7 @@
 package com.quxue.template;
 
 import cn.hutool.core.util.RandomUtil;
+import com.quxue.template.utils.WeChatUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,15 +15,13 @@ import java.util.Random;
 class SmartOAApplicationTests {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
+    @Autowired
+    private WeChatUtils weChatUtils;
 
     @Test
     public void testStringRedisTemplate() {
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        Boolean testKey = opsForValue.setIfAbsent("testKey", "123", Duration.ofMinutes(5));
-        System.out.println("testKey = " + testKey);
+        weChatUtils.getUserInfo(null, null);
     }
-
 
 
 }

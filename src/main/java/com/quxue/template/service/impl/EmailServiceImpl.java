@@ -2,6 +2,7 @@ package com.quxue.template.service.impl;
 
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailService {
 
 /*    @Resource
@@ -29,10 +31,10 @@ public class EmailServiceImpl implements EmailService {
     private String fromName;
 
 
-    @Async("taskExecutor")
+    @Async("emailTaskExecutor")
     @Override
     public void send(String subject, String message, String target) {
-        String send;
+        log.info("{}正在执行发送邮件任务",Thread.currentThread().getName());
         try {
             HtmlEmail htmlEmail = new HtmlEmail();
             htmlEmail.setStartTLSEnabled(true);
