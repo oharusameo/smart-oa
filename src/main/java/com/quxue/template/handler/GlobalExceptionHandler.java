@@ -3,6 +3,7 @@ package com.quxue.template.handler;
 import cn.hutool.json.JSONUtil;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
+import com.quxue.template.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.List;
 
-import static cn.hutool.http.HttpStatus.HTTP_BAD_REQUEST;
-import static cn.hutool.http.HttpStatus.HTTP_FORBIDDEN;
+import static cn.hutool.http.HttpStatus.*;
 
 
 @RestControllerAdvice
@@ -26,8 +26,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public Result exceptionHandler(Exception exception) {
-        String message = exception.getMessage();
-        System.out.println("message = " + message);
+
         if (exception instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException e = (MethodArgumentNotValidException) exception;
             //获取异常相应结果
@@ -45,7 +44,11 @@ public class GlobalExceptionHandler {
         }
         if (exception instanceof BusinessException) {
             BusinessException e = (BusinessException) exception;
-            return Result.error(e.getMessage());
+            return Result.error(HTTP_UNAVAILABLE,e.getMessage());
+        }
+        if (exception instanceof SystemException) {
+            SystemException e = (SystemException) exception;
+            return Result.error(HTTP_INTERNAL_ERROR,e.getMessage());
         }
 
         return Result.error(HTTP_FORBIDDEN, "网络不稳定");

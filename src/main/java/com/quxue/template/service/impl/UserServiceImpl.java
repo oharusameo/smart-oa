@@ -66,12 +66,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 public void afterCommit() {
                     String subject = "smart-oa管理员初始化激活码";
                     String target = user.getEmail();
-                    String message = "激活码为：" + finalCode;
+                    String message = String.format("激活码为：%s", finalCode);
                     emailService.send(subject, message, target);
                 }
             });
         }
-        return code;
+        if (code != null) {
+            return code;
+        }
+        throw new SystemException("初始化管理员失败");
     }
 
     @Override

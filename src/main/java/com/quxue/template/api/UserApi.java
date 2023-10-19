@@ -37,9 +37,6 @@ public class UserApi {
     public Result createRootUser(@RequestBody @Valid AdminInitDTO admin) {
         log.info(admin.toString());
         String code = userService.initAdmin(admin);
-        if (code != null) {
-            return Result.success("初始化超级管理员成功", code);
-        }
-        return Result.error("初始化超级管理员失败");
+        return Result.success("初始化超级管理员成功", code);
     }
 }
