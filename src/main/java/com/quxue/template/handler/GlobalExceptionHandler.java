@@ -1,6 +1,7 @@
 package com.quxue.template.handler;
 
 import cn.hutool.json.JSONUtil;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.exception.SystemException;
@@ -44,13 +45,21 @@ public class GlobalExceptionHandler {
         }
         if (exception instanceof BusinessException) {
             BusinessException e = (BusinessException) exception;
-            return Result.error(HTTP_UNAVAILABLE,e.getMessage());
+            log.error(e.getMessage());
+            return Result.error(HTTP_UNAVAILABLE, e.getMessage());
         }
         if (exception instanceof SystemException) {
             SystemException e = (SystemException) exception;
-            return Result.error(HTTP_INTERNAL_ERROR,e.getMessage());
+            log.error(e.getMessage());
+            return Result.error(HTTP_INTERNAL_ERROR, e.getMessage());
         }
-
+        if (exception instanceof JWTDecodeException) {
+            JWTDecodeException e = (JWTDecodeException) exception;
+            log.error(e.getMessage());
+            return Result.error(HTTP_UNAVAILABLE, "无效的令牌");
+        }
+        exception.printStackTrace();
+        log.error(exception.getMessage());
         return Result.error(HTTP_FORBIDDEN, "网络不稳定");
     }
 

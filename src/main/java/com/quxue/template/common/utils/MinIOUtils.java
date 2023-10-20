@@ -1,4 +1,4 @@
-package com.quxue.template.utils;
+package com.quxue.template.common.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import io.minio.*;

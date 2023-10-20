@@ -1,4 +1,4 @@
-package com.quxue.template.utils;
+package com.quxue.template.common.utils;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -39,6 +39,7 @@ public class WeChatUtils {
         map.put("grant_type", "authorization_code");
         String response = HttpUtil.post(url, map);
         JSONObject entries = JSONUtil.parseObj(response);
+        log.info(entries.toString());
         String openid = (String) entries.get("openid");
         if (openid == null || openid.length() == 0) {
             throw new BusinessException("微信临时授权码错误");

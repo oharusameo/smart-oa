@@ -1,6 +1,6 @@
 package com.quxue.template.service;
 
-import com.quxue.template.domain.dto.AdminInitDTO;
+import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -12,7 +12,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
-    String initAdmin(AdminInitDTO admin);
+    String initAdmin(CreateUserDTO userDTO);
+
+    String createCommonUser(CreateUserDTO userDTO,Integer adminId);
 
     String register(UserActiveDTO userActiveDTO);
+
+    String login(String jsCode);
 }

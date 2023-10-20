@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 @ApiModel("初始化管理员请求对象")
-public class AdminInitDTO {
+public class CreateUserDTO {
 
     /**
      * 姓名

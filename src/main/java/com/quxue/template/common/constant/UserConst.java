@@ -1,4 +1,4 @@
-package com.quxue.template.constant;
+package com.quxue.template.common.constant;
 
 import java.time.Duration;
 

@@ -4,7 +4,7 @@ import com.quxue.template.domain.dto.EmailDTO;
 import com.quxue.template.domain.dto.ValidationRequestParam;
 import com.quxue.template.domain.dto.XssReqParam;
 import com.quxue.template.domain.pojo.Result;
-import com.quxue.template.utils.WeChatUtils;
+import com.quxue.template.common.utils.WeChatUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

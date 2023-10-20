@@ -40,10 +40,13 @@ public class EmailServiceImpl implements EmailService {
         log.info("{}正在执行发送邮件任务", Thread.currentThread().getName());
         try {
             HtmlEmail htmlEmail = getHtmlEmail(subject, message, target);
-            htmlEmail.send();
+            htmlEmail.buildMimeMessage();
+            htmlEmail.sendMimeMessage();
+            log.info("发送邮件成功");
         } catch (EmailException e) {
             try {
                 HtmlEmail htmlEmail = getHtmlEmail(subject, message, target);
+                htmlEmail.buildMimeMessage();
                 reSend(htmlEmail, retryTimes);
             } catch (EmailException ex) {
                 throw new SystemException("系统出错，重新发送邮件失败");
@@ -61,7 +64,7 @@ public class EmailServiceImpl implements EmailService {
     public void reSend(String subject, String message, String target) {
         log.info("正在执行重新发送邮件任务");
         try {
-            getHtmlEmail(subject, message, target).send();
+            getHtmlEmail(subject, message, target).sendMimeMessage();
         } catch (EmailException e) {
             reSend(subject, message, target);
         }
@@ -77,7 +80,7 @@ public class EmailServiceImpl implements EmailService {
     private void reSend(HtmlEmail htmlEmail, Integer retryTimes) {
         log.info("正在执行重新发送邮件任务");
         try {
-            htmlEmail.send();
+            htmlEmail.sendMimeMessage();
         } catch (EmailException e) {
             if (retryTimes == 0) {
                 throw new BusinessException("发送邮件失败");

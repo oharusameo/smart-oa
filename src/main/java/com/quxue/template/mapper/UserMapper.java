@@ -3,6 +3,7 @@ package com.quxue.template.mapper;
 import com.quxue.template.domain.pojo.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 /**
@@ -15,6 +16,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Update("update t_user set open_id=#{openId},status=1 where id=#{id} and status=0")
     Integer activateUser(User user);
+
+    @Select("select id from t_user where open_id=#{openId}")
+    String selectUserId(String openId);
 }
 
 

@@ -15,11 +15,11 @@ public class Result {
     private Integer statusCode;
     //逻辑状态码（开发者自定义）不是http响应状态码，
     // 一般200认为成功，500任务逻辑有问题
-    @ApiModelProperty(value = "业务处理返回提示信息", example = "比如失败后返回错误的原因")
+    @ApiModelProperty("业务处理返回提示信息")
     private String message;
     //返回给前端的消息，一般都是逻辑错误以后给前端返回提示信息
 
-    @ApiModelProperty(value = "业务处理成功后返回的数据", example = "比如登录成功后返回身份认证的令牌")
+    @ApiModelProperty("业务处理成功后返回的数据")
     private Object data;
     //返回给前端的数据对象，比如单行查询，多行查询
 

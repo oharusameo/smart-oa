@@ -3,8 +3,9 @@ package com.quxue.template.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.quxue.template.constant.UserConst;
-import com.quxue.template.domain.dto.AdminInitDTO;
+import com.quxue.template.common.constant.UserConst;
+import com.quxue.template.common.utils.JWTUtils;
+import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
 import com.quxue.template.exception.BusinessException;
@@ -12,7 +13,7 @@ import com.quxue.template.exception.SystemException;
 import com.quxue.template.service.EmailService;
 import com.quxue.template.service.UserService;
 import com.quxue.template.mapper.UserMapper;
-import com.quxue.template.utils.WeChatUtils;
+import com.quxue.template.common.utils.WeChatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,10 +24,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.annotation.Resource;
-import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Random;
 
 /**
  * @author harusame
@@ -46,17 +44,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private WeChatUtils weChatUtils;
+    @Resource
+    private JWTUtils jwtUtils;
 
-    @Override
     @Transactional
-    public String initAdmin(AdminInitDTO admin) {
+    @Override
+    public String initAdmin(CreateUserDTO admin) {
+        return createUser(admin, true, null);
+    }
+
+    @Transactional
+    @Override
+    public String createCommonUser(CreateUserDTO user, Integer adminId) {
+        return createUser(user, false, adminId);
+    }
+
+
+    private String createUser(CreateUserDTO userDTO, Boolean isRoot, Integer adminId) {
         User user = new User();
-        BeanUtils.copyProperties(admin, user);
+        BeanUtils.copyProperties(userDTO, user);
         Date date = new Date();
         user.setCreateTime(date);
         user.setUpdateTime(date);
         user.setHiredate(date);
-        user.setRoot(IS_ROOT);
+        if (isRoot) {
+            user.setRoot(IS_ROOT);
+        }
+        if (!isRoot) {
+            user.setCreateUser(adminId);
+            user.setUpdateUser(adminId);
+        }
         String code = null;
         if (userMapper.insert(user) == 1) {
             code = generateRandomCode(user);
@@ -64,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void afterCommit() {
-                    String subject = "smart-oa管理员初始化激活码";
+                    String subject = "smart-oa初始化激活码";
                     String target = user.getEmail();
                     String message = String.format("激活码为：%s", finalCode);
                     emailService.send(subject, message, target);
@@ -74,15 +91,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (code != null) {
             return code;
         }
-        throw new SystemException("初始化管理员失败");
+        throw new SystemException("初始化用户失败");
     }
+
 
     @Override
     public String register(UserActiveDTO userActiveDTO) {
-        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         String registerCode = userActiveDTO.getRegisterCode();
-        String keyInRedis = String.format("%s%s", ACTIVE_USER, registerCode);
-        String id = ops.get(keyInRedis);
+        String key = String.format("%s%s", ACTIVE_USER, registerCode);
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String id = ops.get(key);
         if (id == null) {
             throw new BusinessException("激活码错误或已过期");
         }
@@ -97,11 +115,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setOpenId(openId);
         if (userMapper.activateUser(user) == 1) {
             //用户激活后删除激活码
-            stringRedisTemplate.delete(keyInRedis);
-            String token = "注册成功，返回由JWT工具类生成的token";
-            return token;
+            stringRedisTemplate.delete(key);
+            //注册成功后返回令牌
+            return jwtUtils.generateToken(id);
         }
         throw new BusinessException("用户激活失败");
+    }
+
+    @Override
+    public String login(String jsCode) {
+        String openId = weChatUtils.getOpenId(jsCode);
+//        User user = userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId));
+        String id = userMapper.selectUserId(openId);
+        if (id == null) {
+            throw new BusinessException("该微信未绑定用户");
+        }
+        //用户登录成功返回令牌
+        return jwtUtils.generateToken(id);
     }
 
 
