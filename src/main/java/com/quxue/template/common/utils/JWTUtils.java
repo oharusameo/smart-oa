@@ -3,6 +3,7 @@ package com.quxue.template.common.utils;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
@@ -31,7 +32,6 @@ public class JWTUtils {
         return builder.withClaim("userId", userId)
                 .withExpiresAt(date)
                 .sign(algorithm);
-
     }
 
     /**

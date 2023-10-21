@@ -14,7 +14,7 @@ public interface UserService extends IService<User> {
 
     String initAdmin(CreateUserDTO userDTO);
 
-    String createCommonUser(CreateUserDTO userDTO,Integer adminId);
+    String createCommonUser(CreateUserDTO userDTO);
 
     String register(UserActiveDTO userActiveDTO);
 

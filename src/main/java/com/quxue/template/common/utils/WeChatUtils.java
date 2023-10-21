@@ -29,8 +29,7 @@ public class WeChatUtils {
     @Value("${weixin.auth-url}")
     private String url;
 
-    private String getAccessTokenUrl = null;
-
+    //    private String getAccessTokenUrl = null;
     public String getOpenId(String jsCode) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("appid", appId);
@@ -64,7 +63,6 @@ public class WeChatUtils {
 
 
     public String getUserInfo(String registerCode, String weixinCode) {
-        String url = " ";
         InputStream inputStream = null;
         try {
             URL requestUrl = new URL(url);

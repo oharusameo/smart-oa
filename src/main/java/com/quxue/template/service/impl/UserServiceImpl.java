@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.common.constant.UserConst;
 import com.quxue.template.common.utils.JWTUtils;
+import com.quxue.template.common.utils.TokenUtils;
 import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
@@ -22,8 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -47,20 +52,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private JWTUtils jwtUtils;
 
+    @Resource
+    private TokenUtils tokenUtils;
+
     @Transactional
     @Override
     public String initAdmin(CreateUserDTO admin) {
-        return createUser(admin, true, null);
+        return createUser(admin, true);
     }
 
     @Transactional
     @Override
-    public String createCommonUser(CreateUserDTO user, Integer adminId) {
-        return createUser(user, false, adminId);
+    public String createCommonUser(CreateUserDTO user) {
+        return createUser(user, false);
     }
 
 
-    private String createUser(CreateUserDTO userDTO, Boolean isRoot, Integer adminId) {
+    private String createUser(CreateUserDTO userDTO, Boolean isRoot) {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
         Date date = new Date();
@@ -69,8 +77,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setHiredate(date);
         if (isRoot) {
             user.setRoot(IS_ROOT);
-        }
-        if (!isRoot) {
+        } else {
+            Integer adminId = Integer.valueOf(tokenUtils.getUserIdFromHeader());
             user.setCreateUser(adminId);
             user.setUpdateUser(adminId);
         }

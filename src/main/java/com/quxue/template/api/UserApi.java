@@ -55,8 +55,8 @@ public class UserApi {
     public Result createCommonUser(@ApiParam(name = "token", value = "身份认证令牌")
                                    @RequestHeader String token, @RequestBody @Valid CreateUserDTO admin) {
         log.info(token);
-        String userIdFromToken = jwtUtils.getUserIdFromToken(token);
-        String code = userService.createCommonUser(admin, Integer.valueOf(userIdFromToken));
+//        String userIdFromToken = jwtUtils.getUserIdFromToken(token);
+        String code = userService.createCommonUser(admin);
 
         return Result.success("初始化普通员工成功", code);
     }

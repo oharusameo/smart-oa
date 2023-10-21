@@ -101,7 +101,6 @@ public class MinIOUtils {
             minioClient.putObject(putObjectArgs);
 
             //拼接一个minio服务器的地址返回给前端
-            //http://192.168.126.11:9000/miniotest/37362e29131541ddb35082da168f0680.jpg
             StringBuilder filePath = new StringBuilder();
             filePath.append(this.endpoint).append("/").append(bucketName).append("/").append(fileName);
             return filePath.toString();
