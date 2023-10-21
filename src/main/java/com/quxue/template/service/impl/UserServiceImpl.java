@@ -17,6 +17,9 @@ import com.quxue.template.mapper.UserMapper;
 import com.quxue.template.common.utils.WeChatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author harusame
@@ -86,7 +93,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userMapper.insert(user) == 1) {
             code = generateRandomCode(user);
             String finalCode = code;
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+
+            CompletableFuture.runAsync(() -> {
+                String subject = "smart-oa初始化激活码";
+                String target = user.getEmail();
+                String message = String.format("激活码为：%s", finalCode);
+                emailService.send(subject, message, target);
+            });
+
+/*            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void afterCommit() {
                     String subject = "smart-oa初始化激活码";
@@ -94,12 +109,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     String message = String.format("激活码为：%s", finalCode);
                     emailService.send(subject, message, target);
                 }
-            });
+            });*/
         }
         if (code != null) {
             return code;
         }
-        throw new SystemException("初始化用户失败");
+        throw new SystemException("初始化用户失败,原因：插入用户失败");
     }
 
 
@@ -133,13 +148,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String login(String jsCode) {
         String openId = weChatUtils.getOpenId(jsCode);
-//        User user = userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId));
         String id = userMapper.selectUserId(openId);
         if (id == null) {
             throw new BusinessException("该微信未绑定用户");
         }
         //用户登录成功返回令牌
         return jwtUtils.generateToken(id);
+    }
+
+    @Override
+    public Boolean rootVerify(String id) {
+        Integer isRoot = userMapper.selectJobById(id);
+        return Objects.equals(isRoot, IS_ROOT);
     }
 
 

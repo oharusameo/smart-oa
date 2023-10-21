@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.Map;
+
 /**
  * @author harusame
  * @description 针对表【t_user】的数据库操作Mapper
@@ -19,6 +21,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select id from t_user where open_id=#{openId}")
     String selectUserId(String openId);
+
+    @Select("select root from t_user where id=#{id}")
+    Integer selectJobById(String id);
 }
 
 

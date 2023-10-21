@@ -19,4 +19,6 @@ public interface UserService extends IService<User> {
     String register(UserActiveDTO userActiveDTO);
 
     String login(String jsCode);
+
+    Boolean rootVerify(String id);
 }

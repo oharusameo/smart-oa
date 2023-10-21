@@ -22,8 +22,7 @@ public class UserApi {
 
     @Resource
     private UserService userService;
-    @Resource
-    private JWTUtils jwtUtils;
+
 
     @PostMapping("/login")
     @ApiOperation("登录员工账号，返回令牌")
@@ -55,9 +54,7 @@ public class UserApi {
     public Result createCommonUser(@ApiParam(name = "token", value = "身份认证令牌")
                                    @RequestHeader String token, @RequestBody @Valid CreateUserDTO admin) {
         log.info(token);
-//        String userIdFromToken = jwtUtils.getUserIdFromToken(token);
         String code = userService.createCommonUser(admin);
-
         return Result.success("初始化普通员工成功", code);
     }
 
