@@ -2,6 +2,7 @@ package com.quxue.template.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.common.constant.UserConst;
 import com.quxue.template.common.utils.JWTUtils;
@@ -9,6 +10,7 @@ import com.quxue.template.common.utils.TokenUtils;
 import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
+import com.quxue.template.domain.vo.UserVo;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.exception.SystemException;
 import com.quxue.template.service.EmailService;
@@ -17,26 +19,15 @@ import com.quxue.template.mapper.UserMapper;
 import com.quxue.template.common.utils.WeChatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author harusame
@@ -86,6 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             user.setRoot(IS_ROOT);
         } else {
             Integer adminId = Integer.valueOf(tokenUtils.getUserIdFromHeader());
+//            Integer adminId = AuthContextHolder.getUserId();  //通过ThreadLocal获取id
             user.setCreateUser(adminId);
             user.setUpdateUser(adminId);
         }
@@ -127,7 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (id == null) {
             throw new BusinessException("激活码错误或已过期");
         }
-        String openId = weChatUtils.getOpenId(userActiveDTO.getTempCAPTCHA());
+        String openId = weChatUtils.getOpenId(userActiveDTO.getWeixinCode());
 
         if (userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId)) != null) {
             throw new BusinessException("该微信已经存在绑定用户");
@@ -159,7 +151,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Boolean rootVerify(String id) {
         Integer isRoot = userMapper.selectJobById(id);
+        System.out.println("isRoot = " + isRoot);
         return Objects.equals(isRoot, IS_ROOT);
+    }
+
+    @Override
+    public Object checkRegisterCode(String registerCode) {
+        String id = stringRedisTemplate.opsForValue().get(String.format("%s%s", ACTIVE_USER, registerCode));
+        if (id == null) {
+            throw new BusinessException("激活码无效或过期");
+        }
+        String username = userMapper.selectUserNameById(id);
+        if (username != null) {
+            return username;
+        }
+        throw new BusinessException("未查询到对应用户");
+    }
+
+    @Override
+    public UserVo getUserInfo() {
+        String id = tokenUtils.getUserIdFromHeader();
+        if (StringUtils.isBlank(id)) {
+            throw new BusinessException("无效的token");
+        }
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", id));
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(user, userVo);
+        return userVo;
     }
 
 

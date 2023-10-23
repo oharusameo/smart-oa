@@ -1,10 +1,8 @@
 package com.quxue.template.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.quxue.template.common.annotation.RequireRoot;
+import com.quxue.template.common.annotation.RequireLogin;
 import com.quxue.template.common.utils.JWTUtils;
-import com.quxue.template.service.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,11 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
-@Slf4j
+
 @Component
-public class RootInterceptor implements HandlerInterceptor {
-    @Resource
-    private UserService userService;
+public class LoginInterceptor implements HandlerInterceptor {
     @Resource
     private JWTUtils jwtUtils;
 
@@ -27,17 +23,17 @@ public class RootInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
-            if (method.isAnnotationPresent(RequireRoot.class)) {//如果方法贴上了@RequireRoot，则需要做token校验,查询是否root
+            if (method.isAnnotationPresent(RequireLogin.class)) {//如果方法贴上了@RequireLogin，则需要做token校验
                 String token = request.getHeader("token");
                 if (StringUtils.isBlank(token)) {
                     return false;
                 }
                 jwtUtils.verifyToken(token);
-                String userIdFromToken = jwtUtils.getUserIdFromToken(token);
-                return userService.rootVerify(userIdFromToken);
             }
-            return true;//如果没有@RequireRoot.class注解，则放行
+            return true;
         }
         return true;
     }
+//        AuthContextHolder.setUserId(Integer.valueOf(jwtUtils.getUserIdFromToken(token)));
+
 }

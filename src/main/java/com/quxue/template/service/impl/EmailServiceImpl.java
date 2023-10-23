@@ -7,11 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -32,6 +31,9 @@ public class EmailServiceImpl implements EmailService {
     private String host;
     @Value("${spring.mail.retry-times}")
     private Integer retryTimes;
+
+    @Value("${spring.mail.wait-time}")
+    private Long waitTime;
 
     @Value("${spring.application.name}")
     private String fromName;
@@ -81,7 +83,7 @@ public class EmailServiceImpl implements EmailService {
      */
 
     private void reSend(HtmlEmail htmlEmail, Integer retryTimes) {
-        log.info("正在执行第{}次重新发送邮件任务", retryTimes);
+        log.info("正在执行第{}次重新发送邮件任务", 10 - retryTimes);
         try {
             htmlEmail.sendMimeMessage();
         } catch (EmailException e) {

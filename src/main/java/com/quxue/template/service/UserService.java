@@ -4,6 +4,7 @@ import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.quxue.template.domain.vo.UserVo;
 
 /**
  * @author harusame
@@ -21,4 +22,9 @@ public interface UserService extends IService<User> {
     String login(String jsCode);
 
     Boolean rootVerify(String id);
+
+
+    Object checkRegisterCode(String registerCode);
+
+    UserVo getUserInfo();
 }

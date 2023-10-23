@@ -6,11 +6,9 @@ import com.quxue.template.domain.dto.XssReqParam;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.common.utils.WeChatUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -18,6 +16,12 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/test")
 public class TestController {
 
+    @PostMapping("/testLoginInterceptor")
+    @ApiOperation("登录拦截器测试")
+    public Result testLoginInterceptor(@ApiParam(name = "token", value = "身份认证令牌")
+                                       @RequestHeader String token) {
+        return Result.success(token);
+    }
 
     @PostMapping("/validate.do")
     @ApiOperation("手机号码格式校验测试")

@@ -15,5 +15,5 @@ public class UserActiveDTO {
 
     @NotBlank
     @ApiModelProperty("微信发送的临时验证码")
-    private String tempCAPTCHA;
+    private String weixinCode;
 }

@@ -24,6 +24,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select root from t_user where id=#{id}")
     Integer selectJobById(String id);
+
+    @Select("select username from t_user where id=#{id}")
+    String selectUserNameById(String id);
 }
 
 
