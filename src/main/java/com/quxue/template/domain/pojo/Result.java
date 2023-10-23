@@ -43,7 +43,7 @@ public class Result {
         return result;
     }
 
-    public static Result success(String msg) {
+    public static Result successMsg(String msg) {
         Result result = new Result();
         result.statusCode = HTTP_OK;
         result.message = msg;
