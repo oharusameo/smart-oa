@@ -3,6 +3,7 @@ package com.quxue.template.interceptor;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quxue.template.common.annotation.RequireRoot;
 import com.quxue.template.common.utils.JWTUtils;
+import com.quxue.template.exception.BusinessException;
 import com.quxue.template.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,15 +27,17 @@ public class RootInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
+            Class<?> clazz = handlerMethod.getBeanType();
             Method method = handlerMethod.getMethod();
-            if (method.isAnnotationPresent(RequireRoot.class)) {//如果方法贴上了@RequireRoot，则需要做token校验,查询是否root
+            //如果方法或类贴上了@RequireRoot，则需要做token校验,查询是否root
+            if (method.isAnnotationPresent(RequireRoot.class) || clazz.isAnnotationPresent(RequireRoot.class)) {
                 String token = request.getHeader("token");
-                if (StringUtils.isBlank(token)) {
-                    return false;
-                }
                 jwtUtils.verifyToken(token);
                 String userIdFromToken = jwtUtils.getUserIdFromToken(token);
-                return userService.rootVerify(userIdFromToken);
+                if (userService.rootVerify(userIdFromToken)) {
+                    return true;
+                }
+                throw new BusinessException("非法访问，该接口仅允许管理员操作");
             }
             return true;//如果没有@RequireRoot.class注解，则放行
         }

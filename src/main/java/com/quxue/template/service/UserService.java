@@ -24,7 +24,7 @@ public interface UserService extends IService<User> {
     Boolean rootVerify(String id);
 
 
-    Object checkRegisterCode(String registerCode);
+    String checkRegisterCode(String registerCode);
 
     UserVo getUserInfo();
 }

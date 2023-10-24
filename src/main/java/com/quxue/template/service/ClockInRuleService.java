@@ -1,5 +1,6 @@
 package com.quxue.template.service;
 
+import com.quxue.template.domain.dto.SetClockDTO;
 import com.quxue.template.domain.pojo.ClockInRule;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ClockInRuleService extends IService<ClockInRule> {
 
+    void set(SetClockDTO setClockDTO);
+
+    ClockInRule get();
 }

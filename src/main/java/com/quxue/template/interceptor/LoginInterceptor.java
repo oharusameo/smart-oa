@@ -22,12 +22,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
+            Class<?> clazz = handlerMethod.getBeanType();
             Method method = handlerMethod.getMethod();
-            if (method.isAnnotationPresent(RequireLogin.class)) {//如果方法贴上了@RequireLogin，则需要做token校验
+            //如果方法或类上贴上了@RequireLogin，则需要做token校验
+            if (method.isAnnotationPresent(RequireLogin.class) || clazz.isAnnotationPresent(RequireLogin.class)) {
                 String token = request.getHeader("token");
-                if (StringUtils.isBlank(token)) {
-                    return false;
-                }
                 jwtUtils.verifyToken(token);
             }
             return true;

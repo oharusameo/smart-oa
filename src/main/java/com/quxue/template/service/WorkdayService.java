@@ -1,5 +1,6 @@
 package com.quxue.template.service;
 
+import com.quxue.template.domain.dto.SpecialWorkdayDTO;
 import com.quxue.template.domain.pojo.Workday;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface WorkdayService extends IService<Workday> {
 
+    void addSpecialWorkDay(SpecialWorkdayDTO specialWorkdayDTO);
 }

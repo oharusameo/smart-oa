@@ -1,5 +1,6 @@
 package com.quxue.template.service;
 
+import com.quxue.template.domain.dto.AttendanceAlarmDTO;
 import com.quxue.template.domain.pojo.AttendanceAlarm;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface AttendanceAlarmService extends IService<AttendanceAlarm> {
 
+    void setAlarm(AttendanceAlarmDTO alarmDTO);
+
+    AttendanceAlarm getAlarm();
 }

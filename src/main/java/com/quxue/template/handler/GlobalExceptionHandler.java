@@ -6,6 +6,7 @@ import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -57,6 +58,11 @@ public class GlobalExceptionHandler {
             JWTDecodeException e = (JWTDecodeException) exception;
             log.error(e.getMessage());
             return Result.error(HTTP_UNAVAILABLE, "无效的令牌");
+        }
+        if (exception instanceof DuplicateKeyException) {
+            DuplicateKeyException e = (DuplicateKeyException) exception;
+            log.error(e.getMessage());
+            return Result.error(HTTP_BAD_REQUEST, "该数据已存在，不允许重复添加");
         }
         exception.printStackTrace();
         log.error(exception.getMessage());

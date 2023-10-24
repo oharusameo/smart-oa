@@ -9,6 +9,8 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.quxue.template.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +42,9 @@ public class JWTUtils {
      * @param token
      */
     public void verifyToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new BusinessException("token为空");
+        }
         JWTVerifier verifier = JWT.require(Algorithm.HMAC512(secret)).build();
         verifier.verify(token);
     }

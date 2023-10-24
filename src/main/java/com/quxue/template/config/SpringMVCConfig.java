@@ -37,9 +37,8 @@ public class SpringMVCConfig implements WebMvcConfigurer {
      * 解决jackson.date-format不生效
      * 添加拦截器并继承 WebMvcConfigurationSupport后，会覆盖@EnableAutoConfiguration关于WebMvcAutoConfiguration的配置，
      * 从而导致所有的Date返回都变成时间戳
-     *
      */
-    @Override
+/*    @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = converter.getObjectMapper();
@@ -54,6 +53,6 @@ public class SpringMVCConfig implements WebMvcConfigurer {
         // 设置格式化内容
         converter.setObjectMapper(objectMapper);
         converters.add(0, converter);
-    }
+    }*/
 
 }

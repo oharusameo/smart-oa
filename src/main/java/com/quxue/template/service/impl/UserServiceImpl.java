@@ -156,7 +156,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public Object checkRegisterCode(String registerCode) {
+    public String checkRegisterCode(String registerCode) {
         String id = stringRedisTemplate.opsForValue().get(String.format("%s%s", ACTIVE_USER, registerCode));
         if (id == null) {
             throw new BusinessException("激活码无效或过期");

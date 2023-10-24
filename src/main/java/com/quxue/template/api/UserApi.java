@@ -9,6 +9,7 @@ import com.quxue.template.domain.dto.UserActiveDTO;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.domain.vo.UserVo;
 import com.quxue.template.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Api(tags = "用户模块",value = "UserApi")
 @Slf4j
 public class UserApi {
 
@@ -66,7 +68,7 @@ public class UserApi {
     @ApiOperation("根据激活码返回姓名")
     public Result checkRegisterCode(@ApiParam(name = "registerCode", value = "激活码") @Valid
                                     @NotBlank String registerCode) {
-        Object username = userService.checkRegisterCode(registerCode);
+        String username = userService.checkRegisterCode(registerCode);
         return Result.success(username);
     }
 
@@ -74,7 +76,7 @@ public class UserApi {
     @ApiOperation("获取当前员工信息")
     @RequireLogin
     public Result getUserInfo(@ApiParam(name = "token", value = "身份认证令牌")
-                              @RequestHeader("token") String token) {
+                              @RequestHeader String token) {
         UserVo userVo = userService.getUserInfo();
         return Result.success(userVo);
     }

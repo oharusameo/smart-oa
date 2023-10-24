@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -38,8 +39,11 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.application.name}")
     private String fromName;
 
+    private final Long DELAY = 2L;
+    private final Double MULTIPLIER = 1.5;
 
     @Async("emailTaskExecutor")
+    @Retryable(recover = "reSend", value = EmailException.class, maxAttempts = 10, backoff = @Backoff)
     @Override
     public void send(String subject, String message, String target) {
         log.info("{}正在执行发送邮件任务", Thread.currentThread().getName());
@@ -63,6 +67,12 @@ public class EmailServiceImpl implements EmailService {
         simpleMailMessage.setText(message);
         simpleMailMessage.setTo(target);
         javaMailSender.send(simpleMailMessage);*/
+    }
+
+    @Recover
+    public void reSend(EmailException ex, String subject, String message, String target) {
+        log.error("邮件发送失败：{}", ex.getMessage());
+        //TODO 记录未发出的邮件信息，设置定时任务重发
     }
 
     @Override

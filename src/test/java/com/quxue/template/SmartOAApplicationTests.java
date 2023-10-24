@@ -1,5 +1,7 @@
 package com.quxue.template;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.quxue.template.common.utils.JWTUtils;
 import com.quxue.template.common.utils.WeChatUtils;
 import org.junit.jupiter.api.Test;
@@ -18,13 +20,23 @@ class SmartOAApplicationTests {
     private JWTUtils jwtUtils;
 
     @Test
+    public void testDate() {
+        String s1="23:00";
+        String s2="16:00";
+        int r = s1.compareTo(s2);
+        System.out.println("r = " + r);
+
+    }
+
+
+    @Test
     public void testStringRedisTemplate() {
 
 
     }
 
     @Test
-    public  void test(){
+    public void test() {
 
     }
 
