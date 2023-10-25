@@ -14,6 +14,7 @@ import com.quxue.template.service.SignDetailService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author harusame
@@ -52,7 +53,8 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
         DateTime date = DateUtil.date();
         IsWorkDay(date);
         String userId = tokenUtils.getUserIdFromHeader();
-        IsInTime(userId, date, signStatus);
+        String formattedDate = DateUtil.format(date, "HH:mm");
+        IsInTime(userId, formattedDate, signStatus);
         //判断当天是否已打卡
         if (signDetailMapper.selectSignInRecord(userId) != null) {
             throw new BusinessException("今天已经打过卡了");
@@ -79,7 +81,7 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
     /**
      * 判断是否在合法打卡时间内
      */
-    protected void IsInTime(String userId, DateTime date, boolean signStatus) {
+    protected void IsInTime(String userId, String date, boolean signStatus) {
         String leaderId = userMapper.selectUpdateUserById(userId);
         //查找当前用户的更新用户id，从而找到当前用户的领导设置的打卡时间
         ClockInRule clockInRule;
@@ -88,14 +90,14 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
         } else {
             clockInRule = clockInRuleMapper.selectOne(new QueryWrapper<ClockInRule>().eq("user_id", leaderId));
         }
-        DateTime start;
-        DateTime end;
+        String start;
+        String end;
         if (signStatus) {
-            start = DateUtil.parse(String.format("%s %s", DateUtil.today(), clockInRule.getSigninStartTime()));
-            end = DateUtil.parse(String.format("%s %s", DateUtil.today(), clockInRule.getSigninEndTime()));
+            start = clockInRule.getSigninStartTime();
+            end = clockInRule.getSigninEndTime();
         } else {
-            start = DateUtil.parse(String.format("%s %s", DateUtil.today(), clockInRule.getSignoutStartTime()));
-            end = DateUtil.parse(String.format("%s %s", DateUtil.today(), clockInRule.getSignoutEndTime()));
+            start = clockInRule.getSignoutStartTime();
+            end = clockInRule.getSignoutEndTime();
         }
 
         if (date.compareTo(start) < 0) {
