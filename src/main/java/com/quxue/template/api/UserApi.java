@@ -58,9 +58,9 @@ public class UserApi {
     @ApiOperation("创建普通员工")
     @RequireRoot
     public Result createCommonUser(@ApiParam(name = "token", value = "身份认证令牌")
-                                   @RequestHeader String token, @RequestBody @Valid CreateUserDTO admin) {
+                                   @RequestHeader String token, @RequestBody @Valid CreateUserDTO userDTO) {
         log.info(token);
-        String code = userService.createCommonUser(admin);
+        String code = userService.createCommonUser(userDTO);
         return Result.success("初始化普通员工成功", code);
     }
 

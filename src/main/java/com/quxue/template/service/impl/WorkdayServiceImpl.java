@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author harusame
@@ -32,6 +33,11 @@ public class WorkdayServiceImpl extends ServiceImpl<WorkdayMapper, Workday>
         if (workdayMapper.insert(workday) != 1) {
             throw new SystemException("系统异常，添加特殊工作日失败");
         }
+    }
+
+    @Override
+    public List<Workday> listWorkDay4CurrentYear() {
+        return workdayMapper.selectWorkDay4CurrentYear();
     }
 }
 

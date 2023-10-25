@@ -53,7 +53,7 @@ public class AttendanceManageApi {
     @ApiOperation("获取特殊节假日列表")
     public Result getSpecialHolidays(@ApiParam(name = "token", value = "身份认证令牌")
                                      @RequestHeader String token) {
-        return Result.success(holidaysService.list());
+        return Result.success(holidaysService.listSpecialHolidays4CurrentYear());
     }
 
     @PostMapping("/setClockInRule")
@@ -110,6 +110,6 @@ public class AttendanceManageApi {
     @ApiOperation("获取特殊工作日列表")
     public Result getSpecialWorkdays(@ApiParam(name = "token", value = "身份认证令牌")
                                      @RequestHeader String token) {
-        return Result.success(workdayService.list());
+        return Result.success(workdayService.listWorkDay4CurrentYear());
     }
 }

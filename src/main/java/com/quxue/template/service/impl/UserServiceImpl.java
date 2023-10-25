@@ -81,19 +81,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             user.setCreateUser(adminId);
             user.setUpdateUser(adminId);
         }
-        String code = null;
-        if (userMapper.insert(user) == 1) {
-            code = generateRandomCode(user);
-            String finalCode = code;
+        String code;
+        if (userMapper.insert(user) != 1) {
+            throw new BusinessException("员工电话或邮箱重复，新增失败");
+        }
+        code = generateRandomCode(user);
+        String finalCode = code;
 
-            CompletableFuture.runAsync(() -> {
-                String subject = "smart-oa初始化激活码";
-                String target = user.getEmail();
-                String message = String.format("激活码为：%s", finalCode);
-                emailService.send(subject, message, target);
-            });
-
-/*            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        CompletableFuture.runAsync(() -> {
+            String subject = "smart-oa初始化激活码";
+            String target = user.getEmail();
+            String message = String.format("激活码为：%s", finalCode);
+            emailService.send(subject, message, target);
+        });
+        /*            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void afterCommit() {
                     String subject = "smart-oa初始化激活码";
@@ -102,11 +103,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     emailService.send(subject, message, target);
                 }
             });*/
-        }
-        if (code != null) {
-            return code;
-        }
-        throw new SystemException("初始化用户失败,原因：插入用户失败");
+        return code;
     }
 
 

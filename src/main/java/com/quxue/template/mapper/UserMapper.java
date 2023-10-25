@@ -27,6 +27,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select username from t_user where id=#{id}")
     String selectUserNameById(String id);
+
+    @Select("select update_user from t_user where id=#{id}")
+    String selectUpdateUserById(String id);
 }
 
 

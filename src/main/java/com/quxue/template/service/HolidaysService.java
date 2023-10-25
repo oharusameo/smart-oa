@@ -4,6 +4,8 @@ import com.quxue.template.domain.dto.SpecialDayDTO;
 import com.quxue.template.domain.pojo.Holidays;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author harusame
  * @description 针对表【t_holidays】的数据库操作Service
@@ -12,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface HolidaysService extends IService<Holidays> {
 
     void addSpecialHoliday(SpecialDayDTO specialDayDTO);
+
+
+    List<Holidays> listSpecialHolidays4CurrentYear();
 }

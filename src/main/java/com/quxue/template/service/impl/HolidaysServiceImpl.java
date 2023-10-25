@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author harusame
@@ -32,6 +33,11 @@ public class HolidaysServiceImpl extends ServiceImpl<HolidaysMapper, Holidays>
         if (holidaysMapper.insert(holidays) != 1) {
             throw new SystemException("系统异常，添加特殊节假日失败");
         }
+    }
+
+    @Override
+    public List<Holidays> listSpecialHolidays4CurrentYear() {
+        return holidaysMapper.selectSpecialHolidays4CurrentYear();
     }
 }
 
