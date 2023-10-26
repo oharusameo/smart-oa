@@ -47,7 +47,10 @@ public class GlobalExceptionHandler {
         if (exception instanceof BusinessException) {
             BusinessException e = (BusinessException) exception;
             log.error(e.getMessage());
-            return Result.error(HTTP_UNAVAILABLE, e.getMessage());
+            if (e.getStatusCode() == null) {
+                return Result.error(HTTP_INTERNAL_ERROR, e.getMessage());
+            }
+            return Result.error(e.getStatusCode(), e.getMessage());
         }
         if (exception instanceof SystemException) {
             SystemException e = (SystemException) exception;

@@ -1,5 +1,6 @@
 package com.quxue.template.service;
 
+import com.quxue.template.common.enums.SignTypeEnum;
 import com.quxue.template.domain.pojo.FaceModel;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,4 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FaceModelService extends IService<FaceModel> {
 
     void createFaceModel(MultipartFile photo);
+
+    void verifyFaceModel(MultipartFile photo);
 }

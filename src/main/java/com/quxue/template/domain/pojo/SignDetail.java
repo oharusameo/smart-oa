@@ -4,23 +4,25 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
+import com.quxue.template.common.enums.SignStatusEnum;
+import com.quxue.template.common.enums.SignTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @TableName t_sign_detail
  */
-@TableName(value ="t_sign_detail")
+@TableName(value = "t_sign_detail")
 @Data
 @ApiModel
 public class SignDetail implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -53,13 +55,13 @@ public class SignDetail implements Serializable {
      * 类型：1：签到；0：签退
      */
     @ApiModelProperty("类型：1：签到；0：签退")
-    private Integer signType;
+    private SignTypeEnum signType;
 
     /**
      * 结果 1:正常 2:迟到 3:早退
      */
     @ApiModelProperty("结果 1:正常 2:迟到 3:早退")
-    private Integer signStatus;
+    private SignStatusEnum signStatus;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -77,12 +79,12 @@ public class SignDetail implements Serializable {
         }
         SignDetail other = (SignDetail) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
-            && (this.getSignDate() == null ? other.getSignDate() == null : this.getSignDate().equals(other.getSignDate()))
-            && (this.getSignTime() == null ? other.getSignTime() == null : this.getSignTime().equals(other.getSignTime()))
-            && (this.getSignType() == null ? other.getSignType() == null : this.getSignType().equals(other.getSignType()))
-            && (this.getSignStatus() == null ? other.getSignStatus() == null : this.getSignStatus().equals(other.getSignStatus()));
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
+                && (this.getSignDate() == null ? other.getSignDate() == null : this.getSignDate().equals(other.getSignDate()))
+                && (this.getSignTime() == null ? other.getSignTime() == null : this.getSignTime().equals(other.getSignTime()))
+                && (this.getSignType() == null ? other.getSignType() == null : this.getSignType().equals(other.getSignType()))
+                && (this.getSignStatus() == null ? other.getSignStatus() == null : this.getSignStatus().equals(other.getSignStatus()));
     }
 
     @Override

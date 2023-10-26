@@ -31,8 +31,9 @@ class SmartOAApplicationTests {
     }
 
     public static void main(String[] args) {
+        Date date = new Date();
+        System.out.println("date = " + date);
 
-        String format = DateUtil.format(new Date(), "HH:mm");
     }
 
     @Test

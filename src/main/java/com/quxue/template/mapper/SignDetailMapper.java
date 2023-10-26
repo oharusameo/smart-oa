@@ -14,6 +14,9 @@ public interface SignDetailMapper extends BaseMapper<SignDetail> {
 
     @Select("select  id from t_sign_detail where user_id=#{userId} && sign_type=1 && sign_date=current_date limit 1 ")
     SignDetail selectSignInRecord(String userId);
+
+    @Select("select  id from t_sign_detail where user_id=#{userId} && sign_type=0 && sign_date=current_date limit 1 ")
+    SignDetail selectSignOutRecord(String userId);
 }
 
 
