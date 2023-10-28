@@ -1,5 +1,6 @@
 package com.quxue.template.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.quxue.template.domain.pojo.Holidays;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,6 +20,9 @@ public interface HolidaysMapper extends BaseMapper<Holidays> {
 
     @Select("select  id from t_holidays where date=current_date")
     Integer isTodayHoliday();
+
+    @Select("select date from t_holidays where date between #{startDate} and #{endDate}")
+    List<String> getHolidaysInRange(DateTime startDate, DateTime endDate);
 }
 
 

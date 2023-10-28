@@ -1,5 +1,6 @@
 package com.quxue.template.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.quxue.template.domain.pojo.Workday;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,6 +20,9 @@ public interface WorkdayMapper extends BaseMapper<Workday> {
 
     @Select("select  id from t_workday where date=current_date limit 1")
     Integer isTodayWorkDay();
+
+    @Select("select date from t_workday where date between #{startDate} and #{endDate}")
+    List<String> getWorkdaysInRange(DateTime startDate, DateTime endDate);
 }
 
 

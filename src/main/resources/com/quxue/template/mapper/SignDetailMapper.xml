@@ -19,4 +19,12 @@
         sign_date,sign_time,sign_type,
         sign_status
     </sql>
+    <select id="getSignStatistics" resultType="com.quxue.template.domain.vo.DateVo">
+        select cast(sign_date as char) date, if(count(sign_status = 1) = 2, "normal", "abnormal") status
+        from t_sign_detail
+        where user_id = #{id}
+          and sign_date between #{startDate} and #{endDate}
+        group by sign_date
+    </select>
+
 </mapper>

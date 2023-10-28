@@ -1,5 +1,7 @@
 package com.quxue.template.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,21 +11,29 @@ import com.quxue.template.common.constant.SignConst;
 import com.quxue.template.common.enums.SignStatusEnum;
 import com.quxue.template.common.enums.SignTypeEnum;
 import com.quxue.template.common.utils.TokenUtils;
+import com.quxue.template.domain.dto.GetSignStatDTO;
 import com.quxue.template.domain.dto.SignDTO;
 import com.quxue.template.domain.pojo.ClockInRule;
 import com.quxue.template.domain.pojo.FaceModel;
 import com.quxue.template.domain.pojo.SignDetail;
+import com.quxue.template.domain.vo.SignStatVo;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.mapper.*;
 import com.quxue.template.service.FaceModelService;
 import com.quxue.template.service.SignDetailService;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author harusame
@@ -51,6 +61,8 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
 
     @Resource
     private FaceModelMapper faceModelMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void validCanSignIn() {
@@ -62,6 +74,7 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
         validCanSign(SignTypeEnum.SIGN_OUT);
     }
 
+    @Transactional
     @Override
     public Date sign(SignDTO signDTO, MultipartFile photo) {
         String userId = tokenUtils.getUserIdFromHeader();
@@ -79,14 +92,23 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
         signDetail.setSignTime(date);
         setSignStatus(userId, signDetail, date);
         signDetailMapper.insert(signDetail);
+        if (signDetail.getSignType() == SignTypeEnum.SIGN_IN) {
+            setSignDetail2Redis(signDetail);
+        } else if (signDetail.getSignType() == SignTypeEnum.SIGN_OUT) {
+            delSignDetailInRedis(signDetail);
+        }
         return date;
     }
+
 
     /**
      * 设置打卡状态
      */
     private void setSignStatus(String userId, SignDetail signDetail, Date date) {
         ClockInRule clockInRule = getClockInRule(userId);
+        if (getClockInRule(userId) == null) {
+            throw new BusinessException("当前系统尚未设置打卡规则");
+        }
         String now = DateUtil.format(date, "HH:mm");
         if (SignTypeEnum.SIGN_IN == signDetail.getSignType()) {
             String start = clockInRule.getSigninTime();
@@ -141,7 +163,7 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
     }
 
     /**
-     * 判断是否为需要上班
+     * 判断是否需要上班
      */
     private void isWorkDay(DateTime date) {
         boolean work = !date.isWeekend();
@@ -160,7 +182,7 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
     /**
      * 判断是否在合法打卡时间内
      */
-    protected void isInTime(String userId, String date, SignTypeEnum signType) {
+    private void isInTime(String userId, String date, SignTypeEnum signType) {
         ClockInRule clockInRule = getClockInRule(userId);
         String start;
         String end;
@@ -189,6 +211,27 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
             clockInRule = clockInRuleMapper.selectOne(new QueryWrapper<ClockInRule>().eq("user_id", leaderId));
         }
         return clockInRule;
+    }
+
+    private void setSignDetail2Redis(SignDetail signDetail) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+
+        ops.set(String.format("sign:userId:%s", signDetail.getUserId()), signDetail.getSignStatus().toString().toLowerCase());
+
+/*        HashOperations<String, Object, Object> opsForHash = stringRedisTemplate.opsForHash();
+        opsForHash.put("sign:", "userId:" + signDetail.getUserId().toString(), signDetail.getSignStatus().toString().toLowerCase());
+        Map<String, Object> map = BeanUtil.beanToMap(signDetail, new HashMap<>(),
+                CopyOptions.create().setIgnoreNullValue(true).setFieldValueEditor((fieldName, value) -> {
+                    if (value != null) {
+                        value = value.toString();
+                    }
+                    return value;
+                }));
+        opsForHash.putAll("sign:", map);*/
+    }
+
+    private void delSignDetailInRedis(SignDetail signDetail) {
+        stringRedisTemplate.delete(String.format("sign:userId:%s", signDetail.getUserId()));
     }
 }
 
