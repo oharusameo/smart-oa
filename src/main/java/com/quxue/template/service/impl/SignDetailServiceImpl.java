@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.common.constant.FaceConst;
 import com.quxue.template.common.constant.SignConst;
+import com.quxue.template.common.enums.FaceEnum;
 import com.quxue.template.common.enums.SignStatusEnum;
 import com.quxue.template.common.enums.SignTypeEnum;
 import com.quxue.template.common.utils.TokenUtils;
@@ -64,6 +65,7 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+
     @Override
     public void validCanSignIn() {
         validCanSign(SignTypeEnum.SIGN_IN);
@@ -78,15 +80,17 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
     @Override
     public Date sign(SignDTO signDTO, MultipartFile photo) {
         String userId = tokenUtils.getUserIdFromHeader();
+        String tenantId = tokenUtils.getTenantIdFromHeader();
         FaceModel faceModel = faceModelMapper.selectOne(new QueryWrapper<FaceModel>().eq("user_id", userId));
         if (faceModel == null) {
-            throw new BusinessException(FaceConst.NO_FACE_MODEL, "当前系统没有该用户的人脸模型");
+            throw new BusinessException(FaceEnum.NO_FACE_MODEL, "当前系统没有该用户的人脸模型");
         }
         faceModelService.verifyFaceModel(photo);//检测上传的图片
         SignDetail signDetail = new SignDetail();
         signDetail.setSignType(signDTO.getSignType());
         signDetail.setAddress(signDTO.getAddress());
         signDetail.setUserId(Integer.valueOf(userId));
+        signDetail.setTenantId(Integer.valueOf(tenantId));
         Date date = new Date();
         signDetail.setSignDate(date);
         signDetail.setSignTime(date);
@@ -167,10 +171,11 @@ public class SignDetailServiceImpl extends ServiceImpl<SignDetailMapper, SignDet
      */
     private void isWorkDay(DateTime date) {
         boolean work = !date.isWeekend();
-        if (holidaysMapper.isTodayHoliday() != null) {
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        if (holidaysMapper.isTodayHoliday(tenantId) != null) {
             //判断是否为特殊节假日
             work = false;
-        } else if (workdayMapper.isTodayWorkDay() != null) {
+        } else if (workdayMapper.isTodayWorkDay(tenantId) != null) {
             //判断是否为特殊工作日
             work = true;
         }

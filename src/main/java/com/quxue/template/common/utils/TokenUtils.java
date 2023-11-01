@@ -19,4 +19,11 @@ public class TokenUtils {
         String token = request.getHeader("token");
         return jwtUtils.getUserIdFromToken(token);
     }
+
+    public String getTenantIdFromHeader() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
+        String token = request.getHeader("token");
+        return jwtUtils.getTenantIdFromToken(token);
+    }
 }

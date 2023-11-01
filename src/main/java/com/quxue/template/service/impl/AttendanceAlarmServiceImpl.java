@@ -32,14 +32,17 @@ public class AttendanceAlarmServiceImpl extends ServiceImpl<AttendanceAlarmMappe
         AttendanceAlarm attendanceAlarm = new AttendanceAlarm();
         BeanUtils.copyProperties(alarmDTO, attendanceAlarm);
         Integer userId = Integer.valueOf(tokenUtils.getUserIdFromHeader());
+        Integer tenantId = Integer.valueOf(tokenUtils.getTenantIdFromHeader());
+        attendanceAlarm.setTenantId(tenantId);
         attendanceAlarm.setUserId(userId);
-        saveOrUpdate(attendanceAlarm, new QueryWrapper<AttendanceAlarm>().eq("user_Id", userId));
+        saveOrUpdate(attendanceAlarm, new QueryWrapper<AttendanceAlarm>().eq("user_id", userId).eq("tenant_id", tenantId));
     }
 
     @Override
     public AttendanceAlarm getAlarm() {
         String userId = tokenUtils.getUserIdFromHeader();
-        AttendanceAlarm attendanceAlarm = attendanceAlarmMapper.selectOne(new QueryWrapper<AttendanceAlarm>().eq("user_Id", userId));
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        AttendanceAlarm attendanceAlarm = attendanceAlarmMapper.selectOne(new QueryWrapper<AttendanceAlarm>().eq("user_id", userId).eq("tenant_id", tenantId));
         if (attendanceAlarm == null) {
             throw new BusinessException("当前尚未设置考勤告警规则");
         }

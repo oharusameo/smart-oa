@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
@@ -11,15 +12,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @TableName t_face_model
  */
-@TableName(value ="t_face_model")
+@TableName(value = "t_face_model")
 @Data
 @ApiModel
 public class FaceModel implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -35,6 +35,9 @@ public class FaceModel implements Serializable {
      */
     @ApiModelProperty("对应的人脸模型ID")
     private String faceModelId;
+
+    @ApiModelProperty("租户id")
+    private Integer tenantId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -52,8 +55,9 @@ public class FaceModel implements Serializable {
         }
         FaceModel other = (FaceModel) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getFaceModelId() == null ? other.getFaceModelId() == null : this.getFaceModelId().equals(other.getFaceModelId()));
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getTenantId() == null ? other.getUserId() == null : this.getTenantId().equals(other.getTenantId()))
+                && (this.getFaceModelId() == null ? other.getFaceModelId() == null : this.getFaceModelId().equals(other.getFaceModelId()));
     }
 
     @Override
@@ -63,6 +67,7 @@ public class FaceModel implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getFaceModelId() == null) ? 0 : getFaceModelId().hashCode());
+        result = prime * result + ((getTenantId() == null) ? 0 : getTenantId().hashCode());
         return result;
     }
 
@@ -75,6 +80,7 @@ public class FaceModel implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
         sb.append(", faceModelId=").append(faceModelId);
+        sb.append(", tenantId=").append(tenantId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

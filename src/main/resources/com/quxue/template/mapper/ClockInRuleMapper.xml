@@ -13,11 +13,12 @@
             <result property="signoutTime" column="signout_time" jdbcType="VARCHAR"/>
             <result property="signoutEndTime" column="signout_end_time" jdbcType="VARCHAR"/>
             <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,signin_start_time,signin_time,
         signin_end_time,signout_start_time,signout_time,
-        signout_end_time,user_id
+        signout_end_time,user_id,tenant_id
     </sql>
 </mapper>

@@ -51,6 +51,7 @@ public class EmailServiceImpl implements EmailService {
             HtmlEmail htmlEmail = getHtmlEmail(subject, message, target);
             htmlEmail.buildMimeMessage();
             htmlEmail.sendMimeMessage();
+//            htmlEmail.setSSLCheckServerIdentity(true);
             log.info("发送邮件成功");
         } catch (EmailException e) {
             try {

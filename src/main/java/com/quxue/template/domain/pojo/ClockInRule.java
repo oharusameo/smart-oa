@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
@@ -11,15 +12,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @TableName t_clock_in_rule
  */
-@TableName(value ="t_clock_in_rule")
+@TableName(value = "t_clock_in_rule")
 @Data
 @ApiModel
 public class ClockInRule implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -60,6 +60,8 @@ public class ClockInRule implements Serializable {
     @ApiModelProperty("下班打卡结束时间点")
     private String signoutEndTime;
 
+    @ApiModelProperty("租户id")
+    private Integer tenantId;
     /**
      * 管理员ID
      */
@@ -82,13 +84,14 @@ public class ClockInRule implements Serializable {
         }
         ClockInRule other = (ClockInRule) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getSigninStartTime() == null ? other.getSigninStartTime() == null : this.getSigninStartTime().equals(other.getSigninStartTime()))
-            && (this.getSigninTime() == null ? other.getSigninTime() == null : this.getSigninTime().equals(other.getSigninTime()))
-            && (this.getSigninEndTime() == null ? other.getSigninEndTime() == null : this.getSigninEndTime().equals(other.getSigninEndTime()))
-            && (this.getSignoutStartTime() == null ? other.getSignoutStartTime() == null : this.getSignoutStartTime().equals(other.getSignoutStartTime()))
-            && (this.getSignoutTime() == null ? other.getSignoutTime() == null : this.getSignoutTime().equals(other.getSignoutTime()))
-            && (this.getSignoutEndTime() == null ? other.getSignoutEndTime() == null : this.getSignoutEndTime().equals(other.getSignoutEndTime()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()));
+                && (this.getSigninStartTime() == null ? other.getSigninStartTime() == null : this.getSigninStartTime().equals(other.getSigninStartTime()))
+                && (this.getSigninTime() == null ? other.getSigninTime() == null : this.getSigninTime().equals(other.getSigninTime()))
+                && (this.getSigninEndTime() == null ? other.getSigninEndTime() == null : this.getSigninEndTime().equals(other.getSigninEndTime()))
+                && (this.getSignoutStartTime() == null ? other.getSignoutStartTime() == null : this.getSignoutStartTime().equals(other.getSignoutStartTime()))
+                && (this.getSignoutTime() == null ? other.getSignoutTime() == null : this.getSignoutTime().equals(other.getSignoutTime()))
+                && (this.getSignoutEndTime() == null ? other.getSignoutEndTime() == null : this.getSignoutEndTime().equals(other.getSignoutEndTime()))
+                && (this.getTenantId() == null ? other.getTenantId() == null : this.getTenantId().equals(other.getTenantId()))
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()));
     }
 
     @Override
@@ -103,6 +106,7 @@ public class ClockInRule implements Serializable {
         result = prime * result + ((getSignoutTime() == null) ? 0 : getSignoutTime().hashCode());
         result = prime * result + ((getSignoutEndTime() == null) ? 0 : getSignoutEndTime().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getTenantId() == null) ? 0 : getTenantId().hashCode());
         return result;
     }
 
@@ -120,6 +124,7 @@ public class ClockInRule implements Serializable {
         sb.append(", signoutTime=").append(signoutTime);
         sb.append(", signoutEndTime=").append(signoutEndTime);
         sb.append(", userId=").append(userId);
+        sb.append(", tenantId=").append(tenantId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

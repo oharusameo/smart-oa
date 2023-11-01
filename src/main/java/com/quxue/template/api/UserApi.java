@@ -2,6 +2,7 @@ package com.quxue.template.api;
 
 import com.quxue.template.common.annotation.RequireLogin;
 import com.quxue.template.common.annotation.RequireRoot;
+import com.quxue.template.common.annotation.RequireTenantActive;
 import com.quxue.template.common.utils.JWTUtils;
 import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.LoginDTO;
@@ -21,7 +22,7 @@ import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@Api(tags = "用户模块",value = "UserApi")
+@Api(tags = "用户模块", value = "UserApi")
 @Slf4j
 public class UserApi {
 
@@ -48,6 +49,7 @@ public class UserApi {
 
     @PostMapping("/createRootUser")
     @ApiOperation("初始化超级管理员")
+    @Deprecated
     public Result createRootUser(@RequestBody @Valid CreateUserDTO userDTO) {
         log.info(userDTO.toString());
         String code = userService.initAdmin(userDTO);
@@ -59,7 +61,6 @@ public class UserApi {
     @RequireRoot
     public Result createCommonUser(@ApiParam(name = "token", value = "身份认证令牌")
                                    @RequestHeader String token, @RequestBody @Valid CreateUserDTO userDTO) {
-        log.info(token);
         String code = userService.createCommonUser(userDTO);
         return Result.success("初始化普通员工成功", code);
     }

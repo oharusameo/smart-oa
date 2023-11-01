@@ -1,6 +1,8 @@
 package com.quxue.template.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.quxue.template.common.utils.TokenUtils;
 import com.quxue.template.domain.dto.SpecialDayDTO;
 import com.quxue.template.domain.pojo.Holidays;
 import com.quxue.template.exception.BusinessException;
@@ -25,10 +27,14 @@ public class HolidaysServiceImpl extends ServiceImpl<HolidaysMapper, Holidays>
 
     @Resource
     private HolidaysMapper holidaysMapper;
+    @Resource
+    private TokenUtils tokenUtils;
 
     @Override
     public void addSpecialHoliday(SpecialDayDTO specialDayDTO) {
         Holidays holidays = new Holidays();
+        String tenantIdFromHeader = tokenUtils.getTenantIdFromHeader();
+        holidays.setTenantId(Integer.valueOf(tenantIdFromHeader));
         holidays.setDate(specialDayDTO.getSpecialHoliday());
         if (holidaysMapper.insert(holidays) != 1) {
             throw new SystemException("系统异常，添加特殊节假日失败");
@@ -37,7 +43,15 @@ public class HolidaysServiceImpl extends ServiceImpl<HolidaysMapper, Holidays>
 
     @Override
     public List<Holidays> listSpecialHolidays4CurrentYear() {
-        return holidaysMapper.selectSpecialHolidays4CurrentYear();
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        return holidaysMapper.selectSpecialHolidays4CurrentYear(tenantId);
+    }
+
+    @Override
+    public boolean removeByIdAndTid(Integer holidayId) {
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        int r = holidaysMapper.delete(new QueryWrapper<Holidays>().eq("id", holidayId).eq("tenant_id", tenantId));
+        return r == 1;
     }
 }
 

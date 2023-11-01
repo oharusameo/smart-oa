@@ -1,5 +1,6 @@
 package com.quxue.template.common.constant;
 
+@Deprecated
 public interface FaceConst {
     Integer NO_FACE_MODEL = 100404;
     Integer FACE_MODEL_MISMATCH = 100405;

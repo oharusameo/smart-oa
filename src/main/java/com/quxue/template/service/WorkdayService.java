@@ -16,4 +16,6 @@ public interface WorkdayService extends IService<Workday> {
     void addSpecialWorkDay(SpecialWorkdayDTO specialWorkdayDTO);
 
     List<Workday> listWorkDay4CurrentYear();
+
+    boolean removeByIdAndTid(Integer workdayId);
 }

@@ -62,7 +62,8 @@ public class SignDetail implements Serializable {
      */
     @ApiModelProperty("结果 1:正常 2:迟到 3:早退")
     private SignStatusEnum signStatus;
-
+    @ApiModelProperty("租户id")
+    private Integer tenantId;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -84,6 +85,7 @@ public class SignDetail implements Serializable {
                 && (this.getSignDate() == null ? other.getSignDate() == null : this.getSignDate().equals(other.getSignDate()))
                 && (this.getSignTime() == null ? other.getSignTime() == null : this.getSignTime().equals(other.getSignTime()))
                 && (this.getSignType() == null ? other.getSignType() == null : this.getSignType().equals(other.getSignType()))
+                && (this.getTenantId() == null ? other.getTenantId() == null : this.getTenantId().equals(other.getTenantId()))
                 && (this.getSignStatus() == null ? other.getSignStatus() == null : this.getSignStatus().equals(other.getSignStatus()));
     }
 
@@ -97,6 +99,7 @@ public class SignDetail implements Serializable {
         result = prime * result + ((getSignDate() == null) ? 0 : getSignDate().hashCode());
         result = prime * result + ((getSignTime() == null) ? 0 : getSignTime().hashCode());
         result = prime * result + ((getSignType() == null) ? 0 : getSignType().hashCode());
+        result = prime * result + ((getTenantId() == null) ? 0 : getTenantId().hashCode());
         result = prime * result + ((getSignStatus() == null) ? 0 : getSignStatus().hashCode());
         return result;
     }
@@ -114,6 +117,7 @@ public class SignDetail implements Serializable {
         sb.append(", signTime=").append(signTime);
         sb.append(", signType=").append(signType);
         sb.append(", signStatus=").append(signStatus);
+        sb.append(", tenantId=").append(tenantId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

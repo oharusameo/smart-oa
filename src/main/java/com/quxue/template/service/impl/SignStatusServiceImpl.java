@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.quxue.template.common.constant.SignConst;
+import com.quxue.template.common.enums.SignEnum;
 import com.quxue.template.common.utils.TokenUtils;
 import com.quxue.template.domain.dto.GetSignStatDTO;
 import com.quxue.template.domain.pojo.User;
@@ -69,29 +70,30 @@ public class SignStatusServiceImpl implements SignStatusService, SignConst {
 
         List<DateVo> signStatistics = signDetailMapper.getSignStatistics(id, startDate, endDate);
 
-
-        List<String> workdays = workdayMapper.getWorkdaysInRange(startDate, endDate);
-        List<String> holidays = holidaysMapper.getHolidaysInRange(startDate, endDate);
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        List<String> workdays = workdayMapper.getWorkdaysInRange(startDate, endDate, tenantId);
+        List<String> holidays = holidaysMapper.getHolidaysInRange(startDate, endDate, tenantId);
 
         DateRange range = DateUtil.range(startDate, endDate, DateField.DAY_OF_MONTH);
         List<DateVo> list = new ArrayList<>();
         SignStatVo signStatVo = new SignStatVo();
         ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
         for (DateTime d : range) {
-            String type = WORKDAY;
+            SignEnum type = SignEnum.WORKDAY;
             String date = d.toString("yyyy-MM-dd");
             if (d.isWeekend()) {
-                type = HOLIDAY;
+                type = SignEnum.HOLIDAY;
             }
             if (workdays != null && workdays.contains(date)) {
-                type = WORKDAY;
+                type = SignEnum.WORKDAY;
             } else if (holidays != null && holidays.contains(date)) {
-                type = HOLIDAY;
+                type = SignEnum.HOLIDAY;
             }
 
             String status = "";
-            if (WORKDAY.equals(type) && DateUtil.compare(d, DateUtil.date()) <= 0) {
-                status = ABSENCE;
+//            if (WORKDAY.equals(type) && DateUtil.compare(d, DateUtil.date()) <= 0) {
+            if (SignEnum.WORKDAY.equals(type) && DateUtil.compare(d, DateUtil.date()) <= 0) {
+                status = SignEnum.ABSENCE.getValue();
                 for (DateVo dateVo : signStatistics) {
                     if (DateUtil.compare(dateVo.getDate(), d) == 0) {
                         if (DateUtil.today().compareTo(date) == 0) {
@@ -111,7 +113,7 @@ public class SignStatusServiceImpl implements SignStatusService, SignConst {
             }
             DateVo dateVo = new DateVo();
             dateVo.setStatus(status);
-            dateVo.setType(type);
+            dateVo.setType(type.getValue());
             dateVo.setDay(d.dayOfWeekEnum().toChinese("周"));
             dateVo.setDate(d);
             list.add(dateVo);

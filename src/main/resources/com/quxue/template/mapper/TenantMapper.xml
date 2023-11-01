@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quxue.template.mapper.TenantMapper">
+
+    <resultMap id="BaseResultMap" type="com.quxue.template.domain.pojo.Tenant">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="applyDate" column="apply_date" jdbcType="TIMESTAMP"/>
+            <result property="tStatus" column="t_status" jdbcType="INTEGER"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="applicant" column="applicant" jdbcType="VARCHAR"/>
+            <result property="telephone" column="telephone" jdbcType="CHAR"/>
+            <result property="maturity" column="maturity" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,apply_date,
+        t_status,address,applicant,
+        telephone,maturity
+    </sql>
+</mapper>

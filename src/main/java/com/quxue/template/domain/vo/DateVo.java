@@ -1,6 +1,7 @@
 package com.quxue.template.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.quxue.template.common.enums.SignEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

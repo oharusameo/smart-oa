@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
@@ -11,15 +12,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @TableName t_attendance_alarm
  */
-@TableName(value ="t_attendance_alarm")
+@TableName(value = "t_attendance_alarm")
 @Data
 @ApiModel
 public class AttendanceAlarm implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -42,6 +42,9 @@ public class AttendanceAlarm implements Serializable {
     @ApiModelProperty("管理员ID")
     private Integer userId;
 
+    @ApiModelProperty("租户id")
+    private Integer tenantId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -58,9 +61,10 @@ public class AttendanceAlarm implements Serializable {
         }
         AttendanceAlarm other = (AttendanceAlarm) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getLateCount() == null ? other.getLateCount() == null : this.getLateCount().equals(other.getLateCount()))
-            && (this.getEarlyCount() == null ? other.getEarlyCount() == null : this.getEarlyCount().equals(other.getEarlyCount()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()));
+                && (this.getLateCount() == null ? other.getLateCount() == null : this.getLateCount().equals(other.getLateCount()))
+                && (this.getEarlyCount() == null ? other.getEarlyCount() == null : this.getEarlyCount().equals(other.getEarlyCount()))
+                && (this.getTenantId() == null ? other.getTenantId() == null : this.getTenantId().equals(other.getTenantId()))
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()));
     }
 
     @Override
@@ -71,6 +75,7 @@ public class AttendanceAlarm implements Serializable {
         result = prime * result + ((getLateCount() == null) ? 0 : getLateCount().hashCode());
         result = prime * result + ((getEarlyCount() == null) ? 0 : getEarlyCount().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getTenantId() == null) ? 0 : getTenantId().hashCode());
         return result;
     }
 
@@ -84,6 +89,7 @@ public class AttendanceAlarm implements Serializable {
         sb.append(", lateCount=").append(lateCount);
         sb.append(", earlyCount=").append(earlyCount);
         sb.append(", userId=").append(userId);
+        sb.append(", tenantId=").append(tenantId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

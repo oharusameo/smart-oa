@@ -49,6 +49,11 @@
             <version>1.3.2</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.3.1</version>
@@ -91,11 +96,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-            <version>1.5</version>
-        </dependency>
+
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -143,9 +144,9 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.2.2</version>
                 <configuration>
-                    <imageName>smart-oa</imageName>  <!--指定镜像名称 仓库/镜像名:标签-->
+                    <imageName>smart-oa:1.0</imageName>  <!--指定镜像名称 仓库/镜像名:标签-->
                     <baseImage>openjdk:latest</baseImage> <!--指定基础镜像-->
-                    <dockerHost>http://192.168.40.129:2375</dockerHost>  <!-- 指定服务器仓库地址 -->
+                    <dockerHost>http://47.115.228.204:2375</dockerHost>  <!-- 指定服务器仓库地址 -->
                     <entryPoint>["java","-jar","/${project.build.finalName}.jar"]</entryPoint> <!-- 容器启动执行的命令 -->
                     <exposes>
                         <expose>8080</expose><!-- 发布端口 -->

@@ -17,4 +17,7 @@ public interface HolidaysService extends IService<Holidays> {
 
 
     List<Holidays> listSpecialHolidays4CurrentYear();
+
+    boolean removeByIdAndTid(Integer holidayId);
+
 }

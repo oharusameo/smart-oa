@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.quxue.template.interceptor.RootInterceptor;
 import com.quxue.template.interceptor.LoginInterceptor;
+import com.quxue.template.interceptor.TenantExpInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,6 +24,8 @@ public class SpringMVCConfig implements WebMvcConfigurer {
     private LoginInterceptor loginInterceptor;
     @Resource
     private RootInterceptor rootInterceptor;
+    @Resource
+    private TenantExpInterceptor tenantExpInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -31,6 +34,9 @@ public class SpringMVCConfig implements WebMvcConfigurer {
         //需要管理员身份的接口的拦截器
         registry.addInterceptor(rootInterceptor)
                 .addPathPatterns("/**");
+/*        registry.addInterceptor(tenantExpInterceptor)
+                .addPathPatterns("/**");*/
+
     }
 
     /**

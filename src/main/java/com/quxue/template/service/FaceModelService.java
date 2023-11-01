@@ -14,5 +14,7 @@ public interface FaceModelService extends IService<FaceModel> {
 
     void createFaceModel(MultipartFile photo);
 
+    void createGroup(String groupId, String groupName);
+
     void verifyFaceModel(MultipartFile photo);
 }

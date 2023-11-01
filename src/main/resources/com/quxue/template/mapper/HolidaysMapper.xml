@@ -5,11 +5,12 @@
 <mapper namespace="com.quxue.template.mapper.HolidaysMapper">
 
     <resultMap id="BaseResultMap" type="com.quxue.template.domain.pojo.Holidays">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="date" column="date" jdbcType="DATE"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="date" column="date" jdbcType="DATE"/>
+        <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,date
+        id,date,tenant_id
     </sql>
 </mapper>

@@ -15,14 +15,14 @@ import java.util.List;
  */
 public interface WorkdayMapper extends BaseMapper<Workday> {
 
-    @Select("select * from t_workday where year(date)=year(curdate())")
-    List<Workday> selectWorkDay4CurrentYear();
+    @Select("select * from t_workday where year(date)=year(curdate()) and  tenant_id=#{tenantId}")
+    List<Workday> selectWorkDay4CurrentYear(String tenantId);
 
-    @Select("select  id from t_workday where date=current_date limit 1")
-    Integer isTodayWorkDay();
+    @Select("select  id from t_workday where date=current_date and tenant_id=#{tenantId} limit 1")
+    Integer isTodayWorkDay(String tenantId);
 
-    @Select("select date from t_workday where date between #{startDate} and #{endDate}")
-    List<String> getWorkdaysInRange(DateTime startDate, DateTime endDate);
+    @Select("select date from t_workday where date between #{startDate} and #{endDate} and tenant_id=#{tenantId}")
+    List<String> getWorkdaysInRange(DateTime startDate, DateTime endDate,String tenantId);
 }
 
 

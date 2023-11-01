@@ -1,9 +1,11 @@
 package com.quxue.template.api;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.quxue.template.common.annotation.RequireRoot;
 import com.quxue.template.domain.dto.*;
 import com.quxue.template.domain.pojo.AttendanceAlarm;
 import com.quxue.template.domain.pojo.ClockInRule;
+import com.quxue.template.domain.pojo.Holidays;
 import com.quxue.template.domain.pojo.Result;
 import com.quxue.template.service.AttendanceAlarmService;
 import com.quxue.template.service.ClockInRuleService;
@@ -45,7 +47,7 @@ public class AttendanceManageApi {
     public Result delSpecialHoliday(@ApiParam(name = "token", value = "身份认证令牌")
                                     @RequestHeader String token, @ApiParam(name = "节假日id", value = "holidayId")
                                     @RequestBody @Valid DelSpecialHolidayDTO delSpecialHoliDayDTO) {
-        holidaysService.removeById(delSpecialHoliDayDTO.getHolidayId());
+        holidaysService.removeByIdAndTid(delSpecialHoliDayDTO.getHolidayId());
         return Result.successMsg("删除特殊节假日成功");
     }
 
@@ -102,7 +104,7 @@ public class AttendanceManageApi {
     public Result delSpecialWorkday(@ApiParam(name = "token", value = "身份认证令牌")
                                     @RequestHeader String token, @ApiParam(name = "节假日id", value = "holidayId")
                                     @RequestBody @Valid DelSpecialWorkDayDTO delSpecialWorkDayDTO) {
-        workdayService.removeById(delSpecialWorkDayDTO.getWorkdayId());
+        workdayService.removeByIdAndTid(delSpecialWorkDayDTO.getWorkdayId());
         return Result.successMsg("删除特殊节假日成功");
     }
 

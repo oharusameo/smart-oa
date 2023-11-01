@@ -33,6 +33,8 @@ public class UserVo {
     private String station;
     @ApiModelProperty("是否为超级管理员，1：管理员，0：非管理员")
     private Integer root;
-//    @ApiModelProperty("员工状态，1：正常 2：冻结，3：离职")
-//    private Integer status;
+    @ApiModelProperty("租户公司名称")
+    private String tenantName;
+
+
 }

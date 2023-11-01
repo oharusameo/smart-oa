@@ -13,7 +13,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quxue.template.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 @Component
@@ -26,12 +28,13 @@ public class JWTUtils {
     private String secret;
 
 
-    public String generateToken(String userId) {
+    public String generateToken(String userId, String tenantId) {
         Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTCreator.Builder builder = JWT.create();
 
         DateTime date = DateUtil.offset(new Date(), DateField.DAY_OF_YEAR, expire);
         return builder.withClaim("userId", userId)
+                .withClaim("tenantId", tenantId)
                 .withExpiresAt(date)
                 .sign(algorithm);
     }
@@ -52,6 +55,11 @@ public class JWTUtils {
     public String getUserIdFromToken(String token) {
         DecodedJWT decode = JWT.decode(token);
         return decode.getClaim("userId").asString();
+    }
+
+    public String getTenantIdFromToken(String token) {
+        DecodedJWT decode = JWT.decode(token);
+        return decode.getClaim("tenantId").asString();
     }
 
 }

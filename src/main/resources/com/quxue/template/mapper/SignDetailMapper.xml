@@ -12,12 +12,13 @@
             <result property="signTime" column="sign_time" jdbcType="TIMESTAMP"/>
             <result property="signType" column="sign_type" jdbcType="TINYINT"/>
             <result property="signStatus" column="sign_status" jdbcType="TINYINT"/>
+            <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_id,address,
         sign_date,sign_time,sign_type,
-        sign_status
+        sign_status,tenant_id
     </sql>
     <select id="getSignStatistics" resultType="com.quxue.template.domain.vo.DateVo">
         select cast(sign_date as char) date, if(count(sign_status = 1) = 2, "normal", "abnormal") status

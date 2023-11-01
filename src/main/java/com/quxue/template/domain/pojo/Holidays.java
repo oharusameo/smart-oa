@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,25 +14,27 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 
  * @TableName t_holidays
  */
-@TableName(value ="t_holidays")
+@TableName(value = "t_holidays")
 @Data
 @ApiModel
 public class Holidays implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 
+     *
      */
     @ApiModelProperty("日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date date;
+
+    @ApiModelProperty("租户id")
+    private Integer tenantId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -49,7 +52,8 @@ public class Holidays implements Serializable {
         }
         Holidays other = (Holidays) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getDate() == null ? other.getDate() == null : this.getDate().equals(other.getDate()));
+                && (this.getDate() == null ? other.getDate() == null : this.getDate().equals(other.getDate()))
+                && (this.tenantId == null ? other.getTenantId() == null : this.getTenantId().equals(other.getTenantId()));
     }
 
     @Override
@@ -58,6 +62,7 @@ public class Holidays implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getDate() == null) ? 0 : getDate().hashCode());
+        result = prime * result + ((getTenantId() == null) ? 0 : getTenantId().hashCode());
         return result;
     }
 
@@ -69,6 +74,7 @@ public class Holidays implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", date=").append(date);
+        sb.append(", tenantId=").append(tenantId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

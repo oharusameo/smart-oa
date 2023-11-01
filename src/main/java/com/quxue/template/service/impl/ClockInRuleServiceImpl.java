@@ -37,19 +37,21 @@ public class ClockInRuleServiceImpl extends ServiceImpl<ClockInRuleMapper, Clock
 
     @Override
     public void set(SetClockDTO setClockDTO) {
-
         compareDate(setClockDTO);
         ClockInRule clockInRule = new ClockInRule();
         BeanUtils.copyProperties(setClockDTO, clockInRule);
         Integer userId = Integer.valueOf(tokenUtils.getUserIdFromHeader());
+        String tenantId = tokenUtils.getTenantIdFromHeader();
         clockInRule.setUserId(userId);
-        saveOrUpdate(clockInRule, new QueryWrapper<ClockInRule>().eq("user_id", userId));
+        clockInRule.setTenantId(Integer.valueOf(tenantId));
+        saveOrUpdate(clockInRule, new QueryWrapper<ClockInRule>().eq("user_id", userId).eq("tenantId", tenantId));
     }
 
     @Override
     public ClockInRule get() {
         String userId = tokenUtils.getUserIdFromHeader();
-        ClockInRule clockInRule = clockInRuleMapper.selectOne(new QueryWrapper<ClockInRule>().eq("user_id", userId));
+        String tenantId = tokenUtils.getTenantIdFromHeader();
+        ClockInRule clockInRule = clockInRuleMapper.selectOne(new QueryWrapper<ClockInRule>().eq("user_id", userId).eq("tenant_id", tenantId));
         if (clockInRule == null) {
             throw new BusinessException("当前尚未设置考勤打卡规则");
         }

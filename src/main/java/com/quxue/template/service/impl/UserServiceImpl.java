@@ -5,14 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.quxue.template.common.constant.UserConst;
+import com.quxue.template.common.utils.AuthContextHolder;
 import com.quxue.template.common.utils.JWTUtils;
 import com.quxue.template.common.utils.TokenUtils;
 import com.quxue.template.domain.dto.CreateUserDTO;
 import com.quxue.template.domain.dto.UserActiveDTO;
+import com.quxue.template.domain.pojo.Tenant;
 import com.quxue.template.domain.pojo.User;
 import com.quxue.template.domain.vo.UserVo;
 import com.quxue.template.exception.BusinessException;
 import com.quxue.template.exception.SystemException;
+import com.quxue.template.mapper.TenantMapper;
 import com.quxue.template.service.EmailService;
 import com.quxue.template.service.UserService;
 import com.quxue.template.mapper.UserMapper;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,6 +56,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private TokenUtils tokenUtils;
+    @Resource
+    private TenantMapper tenantMapper;
 
     @Transactional
     @Override
@@ -74,8 +80,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUpdateTime(date);
         user.setHiredate(date);
         if (isRoot) {
+            User root = userMapper.selectOne(new QueryWrapper<User>().eq("root", IS_ROOT).eq("tenant_id", user.getTenantId()));
+            if (root != null) {
+                throw new BusinessException("该系统已存在管理员，请勿重复创建");
+            }
             user.setRoot(IS_ROOT);
         } else {
+            String tenantIdFromHeader = tokenUtils.getTenantIdFromHeader();
+            user.setTenantId(Integer.valueOf(tenantIdFromHeader));
             Integer adminId = Integer.valueOf(tokenUtils.getUserIdFromHeader());
 //            Integer adminId = AuthContextHolder.getUserId();  //通过ThreadLocal获取id
             user.setCreateUser(adminId);
@@ -84,6 +96,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String code;
         if (userMapper.insert(user) != 1) {
             throw new BusinessException("员工电话或邮箱重复，新增失败");
+        }
+        if (isRoot) {//初始化数据所需的userId
+            AuthContextHolder.setUserId(user.getId());
         }
         code = generateRandomCode(user);
         String finalCode = code;
@@ -128,8 +143,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userMapper.activateUser(user) == 1) {
             //用户激活后删除激活码
             stringRedisTemplate.delete(key);
+            User tenant = userMapper.selectOne(new QueryWrapper<User>().eq("id", id).select("tenant_id"));
             //注册成功后返回令牌
-            return jwtUtils.generateToken(id);
+            return jwtUtils.generateToken(id, String.valueOf(tenant.getTenantId()));
         }
         throw new BusinessException("用户激活失败");
     }
@@ -137,12 +153,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String login(String jsCode) {
         String openId = weChatUtils.getOpenId(jsCode);
-        String id = userMapper.selectUserId(openId);
-        if (id == null) {
+        User user = userMapper.selectUserId(openId);
+        Map<String, String> map = tenantMapper.selectExpire(String.valueOf(user.getTenantId()));
+        String userStatus = map.get("us");
+        String tenantStatus = map.get("ts");
+        //如果用户和租户的状态都为正常才放行
+        if (("0".equals(userStatus))) {
+            throw new BusinessException("用户已被停用");
+        }
+        if ("0".equals(tenantStatus)) {
+            throw new BusinessException("所属公司账号已停用");
+        }
+
+
+        if (user.getId() == null) {
             throw new BusinessException("该微信未绑定用户");
         }
         //用户登录成功返回令牌
-        return jwtUtils.generateToken(id);
+        return jwtUtils.generateToken(String.valueOf(user.getId()), String.valueOf(user.getTenantId()));
     }
 
     @Override
@@ -175,8 +203,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (user == null) {
             throw new BusinessException("用户不存在");
         }
+        String tenantId = tokenUtils.getTenantIdFromHeader();
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user, userVo);
+        userVo.setTenantName(tenantMapper.selectName(tenantId));
         return userVo;
     }
 

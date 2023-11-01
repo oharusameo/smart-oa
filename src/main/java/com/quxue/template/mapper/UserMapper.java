@@ -19,8 +19,8 @@ public interface UserMapper extends BaseMapper<User> {
     @Update("update t_user set open_id=#{openId},status=1 where id=#{id} and status=0")
     Integer activateUser(User user);
 
-    @Select("select id from t_user where open_id=#{openId}")
-    String selectUserId(String openId);
+    @Select("select id,tenant_id from t_user where open_id=#{openId}")
+    User selectUserId(String openId);
 
     @Select("select root from t_user where id=#{id}")
     Integer selectJobById(String id);

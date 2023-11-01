@@ -15,14 +15,14 @@ import java.util.List;
  */
 public interface HolidaysMapper extends BaseMapper<Holidays> {
 
-    @Select("select * from t_holidays where year(date)=year(curdate())")
-    List<Holidays> selectSpecialHolidays4CurrentYear();
+    @Select("select * from t_holidays where year(date)=year(curdate()) and tenant_id =#{tenantId}")
+    List<Holidays> selectSpecialHolidays4CurrentYear(String tenantId);
 
-    @Select("select  id from t_holidays where date=current_date")
-    Integer isTodayHoliday();
+    @Select("select  id from t_holidays where date=current_date and tenant_id=#{tenantId}")
+    Integer isTodayHoliday(String tenantId);
 
-    @Select("select date from t_holidays where date between #{startDate} and #{endDate}")
-    List<String> getHolidaysInRange(DateTime startDate, DateTime endDate);
+    @Select("select date from t_holidays where date between #{startDate} and #{endDate} and tenant_id=#{tenantId}")
+    List<String> getHolidaysInRange(DateTime startDate, DateTime endDate, String tenantId);
 }
 
 
